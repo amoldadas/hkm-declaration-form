@@ -1,0 +1,925 @@
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <!--<script src="sign.js"></script>-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+<script>
+/*
+ * Signature Plugin
+ * HTML5 Canvas Jquery plugin
+ *
+ * Examples and documentation at: http://tiendasdigitales.net
+ *
+ * Copyright (c) 2018 Lucas Gabriel Martinez
+ *
+ * Version: 1.0.0 - 2018/07/24
+ * Requires: jQuery v1.3+
+ *
+ * Dual licensed under the MIT and GPL licenses:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *   http://www.gnu.org/licenses/gpl.html
+ */
+jQuery(document).ready(function(e) {
+        jQuery.fn.sign = function(options) {
+            var params = jQuery.fn.extend({
+                reset: options.resetButton ? options.resetButton : null,
+                width: options.width ? options.width : 500,
+                height: options.height ? options.height : 300,
+                lineWidth: options.lineWidth ? options.lineWidth : 10,
+            }, options);
+
+            var canvas = jQuery(this);
+
+            var lineWidth = params.lineWidth;
+
+            var context = canvas.get(0).getContext('2d');
+            context.lineJoin = context.lineCap = 'round';
+
+            var fixFingerPosition = 15;
+
+            canvas.attr("width",params.width);
+            canvas.attr("height", params.height);
+
+            var points = [];
+            var last = {x:null,y:null};
+            var holdClick = false;
+
+            var touch = function(e)
+            {
+                var touch = null;
+                if (e.type !== 'click' && e.type !== 'mousedown' && e.type !== 'mousemove') {
+                    touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+                } else {
+                    touch = e;
+                }
+
+                return ({x: touch.pageX, y: touch.pageY});
+            }
+
+            var getMousePosition = function(canvas, evt)
+            {
+                var rect = canvas.get(0).getBoundingClientRect();
+                var pos = touch(evt);
+                return {
+                    x: pos.x + rect.left - fixFingerPosition,
+                    y: pos.y - rect.top - fixFingerPosition
+                };
+            }
+
+            var draw = function(ctx, x, y)
+            {
+                points.push({x: x, y: y, break: false});
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                var p1 = points[0];
+                var p2 = points[1];
+
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+
+                for (var i = 1; i < points.length; i++) {
+                    var midPoint = calculateMiddlePoint(p1, p2);
+                    if (p1.break) {
+                        ctx.moveTo(p2.x, p2.y);
+                    } else {
+                        ctx.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
+                    }
+                    p1 = points[i];
+                    p2 = points[i+1];
+                }
+
+                ctx.lineWidth = lineWidth;
+                ctx.lineTo(p1.x, p1.y);
+                ctx.stroke();
+            }
+
+            var calculateMiddlePoint = function(pointStart, pointEnd)
+            {
+                return {
+                    x: pointStart.x + (pointEnd.x - pointStart.x) / 2 ,
+                    y: pointStart.y + (pointEnd.y - pointStart.y) / 2
+                }
+            }
+
+            // Mouse & touch events
+            canvas.on('touchstart mousedown', function(e) {
+                holdClick = true;
+                var mousePosition = getMousePosition(canvas, e);
+                points.push({x: mousePosition.x, y: mousePosition.y, break: false});
+                return false;
+            }).on('touchmove mousemove', function(e)
+            {
+                if (holdClick) {
+                    var mousePosition = getMousePosition(canvas, e);
+                    draw(context, mousePosition.x, mousePosition.y);
+                }
+                return false;
+            }).on('touchend mouseup', function(e) {
+                e.preventDefault();
+                holdClick = false;
+                points[points.length - 1].break = true;
+
+                return false;
+            });
+
+            // Reset canvas
+            var reset = function()
+            {
+                context.clearRect(0, 0, canvas.width(), canvas.height());
+                points.length = 0;
+            }
+
+            if (params.reset !== null) {
+                params.reset.on('click touchend', function()
+                {
+                    reset();
+                });
+            }
+      };
+});
+
+
+</script>
+    <script>
+        $(document).ready(function()
+        {
+            $('#myCanvas').sign({
+                resetButton: $('#resetSign'),
+                lineWidth: 5, // * Optional
+                width: 300, // * optional. Default: 500
+                height: 130, // * optional. Default: 300
+            });
+
+            // Convert canvas to image
+            document.getElementById('btn-sign').addEventListener("click", function(e) {
+                /*var canvas = document.querySelector('#myCanvas');
+
+                var dataURL = $("#myCanvas").get(0).toDataURL("image/png");
+
+                console.log('img url: ',dataURL);
+                downloadImage(dataURL, 'my-canvas.jpeg');*/
+                drawlImage();
+            });
+            document.getElementById('cmd').addEventListener("click", function(e) {
+              CreatePDFfromHTML();
+            });
+
+            // Save | Download image
+            function downloadImage(data, filename = 'untitled.jpeg') {
+                var a = document.createElement('a');
+                a.href = data;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+            }
+            function drawlImage() {
+                /*$("#canvasimg").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
+                $('#canvasimg').css('width', '10%');
+                $('#canvasimg').css('height', '10%');*/
+
+                $("#sign1").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
+                $('#sign1').css('width', '10%');
+                $('#sign1').css('height', '10%');
+
+                $("#sign2").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
+                $('#sign2').css('width', '10%');
+                $('#sign2').css('height', '10%');
+
+                $("#sign3").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
+                $('#sign3').css('width', '10%');
+                $('#sign3').css('height', '10%');
+
+                $("#sign4").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
+                $('#sign4').css('width', '10%');
+                $('#sign4').css('height', '10%');
+
+                $("#sign5").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
+                $('#sign5').css('width', '10%');
+                $('#sign5').css('height', '10%');
+
+            }
+
+            //Create PDf from HTML...
+            function CreatePDFfromHTML() {
+                var HTML_Width = $(".page").width();
+                var HTML_Height = $(".page").height();
+                var top_left_margin = 15;
+                var PDF_Width = HTML_Width + (top_left_margin * 2);
+                var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+                var canvas_image_width = HTML_Width;
+                var canvas_image_height = HTML_Height;
+
+                var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+                html2canvas($(".page")[0]).then(function (canvas) {
+                    var imgData = canvas.toDataURL("image/jpeg", 1.0);
+                    var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+                    pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+                    for (var i = 1; i <= totalPDFPages; i++) {
+                        pdf.addPage(PDF_Width, PDF_Height);
+                        pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height*i)+(top_left_margin*4),canvas_image_width,canvas_image_height);
+                    }
+                    pdf.save("Your_PDF_Name.pdf");
+                    $(".page").hide();
+                });
+            }
+
+            //Update name value
+            $('#name1').keyup(function() {
+               $('#name1Val').text($(this).val());
+            });
+
+            $('#name2').keyup(function() {
+               $('#name2Val').text($(this).val());
+            });
+
+            $('#name3').keyup(function() {
+               $('#name3Val').text($(this).val());
+            });
+
+            $('#name4').keyup(function() {
+               $('#name4Val').text($(this).val());
+            });
+
+            $('#name5').keyup(function() {
+               $('#name5Val').text($(this).val());
+            });
+
+            $('#name6').keyup(function() {
+               $('#name6Val').text($(this).val());
+            });
+
+            $('#name7').keyup(function() {
+               $('#name7Val').text($(this).val());
+            });
+
+            //Update gender values
+
+            $('#gender1').change(function() {
+               console.log($(this).val());// will work here
+               $('#gender1Val').text($(this).val());
+            });
+
+            $('#gender2').change(function() {
+               console.log($(this).val());// will work here
+               $('#gender2Val').text($(this).val());
+            });
+
+            $('#gender3').change(function() {
+               console.log($(this).val());// will work here
+               $('#gender3Val').text($(this).val());
+            });
+
+            $('#gender4').change(function() {
+               console.log($(this).val());// will work here
+               $('#gender4Val').text($(this).val());
+            });
+
+            $('#gender5').change(function() {
+               console.log($(this).val());// will work here
+               $('#gender5Val').text($(this).val());
+            });
+
+            $('#gender6').change(function() {
+               console.log($(this).val());// will work here
+               $('#gender6Val').text($(this).val());
+            });
+
+            $('#gender7').change(function() {
+               console.log($(this).val());// will work here
+               $('#gender7Val').text($(this).val());
+            });
+            //Update dob value
+            $('#dob1').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#dob1Val').text($(this).val());
+            });
+
+            $('#dob2').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#dob2Val').text($(this).val());
+            });
+
+            $('#dob3').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#dob3Val').text($(this).val());
+            });
+
+            $('#dob4').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#dob4Val').text($(this).val());
+            });
+
+            $('#dob5').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#dob5Val').text($(this).val());
+            });
+
+            $('#dob6').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#dob6Val').text($(this).val());
+            });
+
+            $('#dob7').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#dob7Val').text($(this).val());
+            });
+
+            //Update mob value
+            $('#mob1').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#mob1Val').text($(this).val());
+            });
+
+            $('#mob2').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#mob2Val').text($(this).val());
+            });
+
+            $('#mob3').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#mob3Val').text($(this).val());
+            });
+
+            $('#mob4').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#mob4Val').text($(this).val());
+            });
+
+            $('#mob5').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#mob5Val').text($(this).val());
+            });
+
+            $('#mob6').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#mob6Val').text($(this).val());
+            });
+
+            $('#mob7').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#mob7Val').text($(this).val());
+            });
+
+            //Update Address
+            $('#address').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#addressVal').text($(this).val());
+            });
+
+            //Update Emergency Contact
+            $('#emergencyContact').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#emergencyContactVal').text($(this).val());
+            });
+
+            //Update ID proof submitted or not
+            $('#yes').click(function() {
+               //console.log($(this).val());// will work here
+               $('#idProofVal').text($(this).val());
+            });
+            $('#no').click(function() {
+               //console.log($(this).val());// will work here
+               $('#idProofVal').text($(this).val());
+            });
+
+            //Update source of Contact
+            $('#gitaLife').on('change', function() {
+                manageSourceVal($('#sourcesVal').text(), $(this).val(), this.checked);
+            });
+
+            $('#sss').on('change', function() {
+              manageSourceVal($('#sourcesVal').text(), $(this).val(), this.checked);
+            });
+
+            $('#folk').on('change', function() {
+              manageSourceVal($('#sourcesVal').text(), $(this).val(), this.checked);
+            });
+
+            $('#sundayVisits').on('change', function() {
+              manageSourceVal($('#sourcesVal').text(), $(this).val(), this.checked);
+            });
+
+            $('#zoom').on('change', function() {
+              manageSourceVal($('#sourcesVal').text(), $(this).val(), this.checked);
+            });
+
+            $('#other').on('change', function() {
+              manageSourceVal($('#sourcesVal').text(), $(this).val(), this.checked);
+            });
+
+            $('#none').on('change', function() {
+              var checked = this.checked
+              if(checked){
+                $('#sourcesVal').text('');
+                //uncheck all other checkboxes
+                $('#gitaLife').prop('checked', false);
+                $('#sss').prop('checked', false);
+                $('#folk').prop('checked', false);
+                $('#sundayVisits').prop('checked', false);
+                $('#zoom').prop('checked', false);
+                $('#other').prop('checked', false);
+              }
+            });
+
+            function manageSourceVal(sourceVal, currentVal, checked){
+              //var sourceVal = $('#sourcesVal').text();
+              if(checked){
+                if(sourceVal.length){
+                  $('#sourcesVal').text(sourceVal+', '+currentVal);
+                }else{
+                  $('#sourcesVal').text(currentVal);
+                }
+              }else{
+                sourceVal = sourceVal.replace(', '+currentVal,'').replace(currentVal,'');
+                $('#sourcesVal').text(sourceVal);
+              }
+            }
+
+        });
+
+        //Update declaration form
+        function updatePilgrimName(){
+          var pilgrimName = document.getElementById('pilgrimName');
+          var pilgrimNameVal = document.getElementById('pilgrimNameVal');
+          pilgrimNameVal.value = pilgrimName.value;
+        }
+    </script>
+    <style>
+        #myCanvas {
+            border:4px solid #444;
+            border-radius: 15px;
+        }
+        .page{
+          border:3px solid #444;
+          border-radius: 1px;
+          width: 100%;
+          height: auto;
+          text-align: center;
+          padding: 5px;
+        }
+        table{
+          width: 100%;
+        }
+        table,
+     th,
+     td {
+       padding: 10px;
+       border: 1px solid black;
+       border-collapse: collapse;
+     }
+     #pilgrimName{
+       width: 100%;
+     }
+    </style>
+</head>
+<body>
+    <canvas id="myCanvas"></canvas>
+    <input type="button" value="Reset" id='resetSign'>
+    <button id="btn-sign">Sing the Declaration</button><button id="cmd">generate PDF</button>
+    <!--<img style="border:1px dashed gray;" id="canvasimg" src="" />-->
+    <div style="width:100%">
+      <table>
+        <tr>
+          <td>Enter pilgrimage name: </td><td><input style="width=100%;" type="text" id="pilgrimName" onkeyup="updatePilgrimName()"/></td>
+        </tr>
+        <tr>
+          <td><b>Name as in Adhar card(In Caps)</b></td><td><b>M/F</b></td><td><b>DOB</b></td><td><b>Mobile</b></td>
+        </tr>
+        <!--Member 1-->
+        <tr>
+          <td><input id="name1" type="text" value="" /></td>
+          <td>
+            <select id="gender1">
+              <option>
+
+              </option>
+              <option>
+                Male
+              </option>
+              <option>
+                Female
+              </option>
+            </select
+          </td>
+          <td><input type="text" id="dob1" name="dob" value=""/></td>
+          <td><input type="text" id="mob1" name="mob" value=""/></td>
+        </tr>
+
+        <!--Member 2-->
+        <tr>
+          <td><input id="name2" type="text" value=""/></td>
+          <td>
+            <select id="gender2">
+              <option>
+
+              </option>
+              <option>
+                Male
+              </option>
+              <option>
+                Female
+              </option>
+            </select
+          </td>
+          <td><input type="text" id="dob2" name="dob" value=""/></td>
+          <td><input type="text" id="mob2" name="mob" value=""/></td>
+        </tr>
+
+        <!--Member 3-->
+        <tr>
+          <td><input id="name3" type="text" value=""/></td>
+          <td>
+            <select id="gender3">
+              <option>
+
+              </option>
+              <option>
+                Male
+              </option>
+              <option>
+                Female
+              </option>
+            </select
+          </td>
+          <td><input type="text" id="dob3" name="dob" value=""/></td>
+          <td><input type="text" id="mob3" name="mob" value=""/></td>
+        </tr>
+
+        <!--Member 4-->
+        <tr>
+          <td><input id="name4" type="text" value=""/></td>
+          <td>
+            <select id="gender4">
+              <option>
+
+              </option>
+              <option>
+                Male
+              </option>
+              <option>
+                Female
+              </option>
+            </select
+          </td>
+          <td><input type="text" id="dob4" name="dob" value=""/></td>
+          <td><input type="text" id="mob4" name="mob" value=""/></td>
+        </tr>
+
+        <!--Member 5-->
+        <tr>
+          <td><input id="name5" type="text" value=""/></td>
+          <td>
+            <select id="gender5">
+              <option>
+
+              </option>
+              <option>
+                Male
+              </option>
+              <option>
+                Female
+              </option>
+            </select
+          </td>
+          <td><input type="text" id="dob5" name="dob" value=""/></td>
+          <td><input type="text" id="mob5" name="mob" value=""/></td>
+        </tr>
+
+        <!--Member 6-->
+        <tr>
+          <td><input id="name6" type="text" value=""/></td>
+          <td>
+            <select id="gender6">
+              <option>
+
+              </option>
+              <option>
+                Male
+              </option>
+              <option>
+                Female
+              </option>
+            </select
+          </td>
+          <td><input type="text" id="dob6" name="dob" value=""/></td>
+          <td><input type="text" id="mob6" name="mob" value=""/></td>
+        </tr>
+
+        <!--Member 7-->
+        <tr>
+          <td><input id="name7" type="text" value=""/></td>
+          <td>
+            <select id="gender7">
+              <option>
+
+              </option>
+              <option>
+                Male
+              </option>
+              <option>
+                Female
+              </option>
+            </select
+          </td>
+          <td><input type="text" id="dob7" name="dob" value=""/></td>
+          <td><input type="text" id="mob7" name="mob" value=""/></td>
+        </tr>
+
+        <tr style="outline: thin solid">
+          <td><b>Address</b></td><td><textarea id="address">804, F wing, Lake Florence, Lake Homes, Powai 400076, Mumbai</textarea></td>
+        </tr>
+        <tr style="outline: thin solid;padding-top:200px;">
+          <td><b>Emergency contact & name: </b></td><td><textarea id="emergencyContact">9960058969, Anandrao Dadas</textarea></td>
+        </tr>
+        <tr>
+          <td><b>ID Proof submitted: </b></td><td><input type="radio" id="yes" name="idProof" value="Yes">
+          <label>Yes</label>
+          <input type="radio" id="no" name="idProof" value="No">
+          <label>No</label></td>
+        </tr>
+        <tr>
+          <td><b>Temple programs Attending: </b></td>
+          <td>
+            <input type="checkbox" id="gitaLife" name="gitaLife" value="Gita Life"/>
+            <label for="gitaLife">Gita Life</label>
+
+            <input type="checkbox" id="sss" name="sss" value="SSS"/>
+            <label for="sss">SSS</label>
+
+            <input type="checkbox" id="folk" name="folk" value="FOLK"/>
+            <label for="folk">FOLK</label>
+
+            <input type="checkbox" id="sundayVisits" name="sundayVisits" value="Sunday Visits"/>
+            <label for="sundayVisits">Sunday Visits</label>
+
+            <input type="checkbox" id="zoom" name="zoom" value="Zoom Online"/>
+            <label for="zoom">Zoom Online</label>
+
+            <input type="checkbox" id="other" name="other" value="Other"/>
+            <label for="other">Other</label>
+
+            <input type="checkbox" id="none" name="none" value = "None"/>
+            <label for="none">None</label>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="page" style="display:block;" id="formDiv">
+      <h2>Hare Krishna Movement-Mumbai Pilgrimages</h2>
+      <p>Registration Form</p>
+      <table>
+        <tr>
+          <td style="width:15%;"><b>Name of the Pilgrimage Tour - </b></td><td style="width:80%;"><input type="text" id="pilgrimNameVal" style="width: 100%;border-width: 0 0 2px;"/></td><td style="width:5%;"><b>PILGRIMAGE</b></td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+          <td><b>No.</b></td><td><b>Name as Adhar Card (In Caps)</b></td><td><b>M/F</b></td><td><b>DOB</b></td><td><b>Mobile</b></td>
+        </tr>
+        <tr>
+          <td>1</td><td id="name1Val"></td><td id="gender1Val"></td><td id="dob1Val"></td><td id="mob1Val"></td>
+        </tr>
+        <tr>
+          <td>2</td><td id="name2Val"></td><td id="gender2Val"></td><td id="dob2Val"></td><td id="mob2Val"></td>
+        </tr>
+        <tr>
+          <td>3</td><td id="name3Val"></td><td id="gender3Val"></td><td id="dob3Val"></td><td id="mob3Val"></td>
+        </tr>
+        <tr>
+          <td>4</td><td id="name4Val"></td><td id="gender4Val"></td><td id="dob4Val"></td><td id="mob4Val"></td>
+        </tr>
+        <tr>
+          <td>5</td><td id="name5Val"></td><td id="gender5Val"></td><td id="dob5Val"></td><td id="mob5Val"></td>
+        </tr>
+        <tr>
+          <td>6</td><td id="name6Val"></td><td id="gender6Val"></td><td id="dob6Val"></td><td id="mob6Val"></td>
+        </tr>
+        <tr>
+          <td>7</td><td id="name7Val"></td><td id="gender7Val"></td><td id="dob7Val"></td><td id="mob7Val"></td>
+        </tr>
+      </table>
+      <div style="height:20px;"></div>
+      <table>
+        <tr>
+          <td><b>Address: </b></td><td id="addressVal">804, F wing, Lake Florence, Lake Homes, Powai 400076, Mumbai</td>
+        </tr>
+      </table>
+
+      <div style="height:20px;"></div>
+      <table>
+        <tr>
+          <td><b>Emergency contact & name: </b></td><td id="emergencyContactVal">9960058969, Anandrao Dadas</td>
+        </tr>
+      </table>
+
+      <div style="height:20px;"></div>
+      <table>
+        <tr>
+          <td><b>ID Proof submitted : </b></td><td id="idProofVal">Yes</td>
+        </tr>
+      </table>
+
+      <div style="height:20px;"></div>
+      <table>
+        <tr>
+          <td><b>Temple programs attending : </b></td><td id="sourcesVal"></td>
+        </tr>
+      </table>
+      <div style="height:20px;"></div>
+      <p>I & the above participants agree to follow the rules and regulations as in attached pages.</p>
+
+      <div style="height:20px;"></div>
+      <table>
+        <tr>
+          <td><b>Date : </b> 04/11/2022</td><td><b>Participant's Signature: </b></td>
+          <td><img style="border:1px dashed gray;" id="sign1" src="" /></td>
+        </tr>
+      </table>
+      <!--Page 2-->
+      <div style="height:20px;"></div>
+      <div style="padding:5px;text-align:justify;">
+        <div style="text-align:center !important;"><b>DECLARATION</b></div><br>
+I and the above participants hereby declare that I/we will abide by the rules and regulations stated below during the Pilgrimage. I/we understand clearly the terms and conditions listed below. I/we will be solely responsible for my luggage and valuables, if any. I/we will strictly follow the schedule throughout the Pilgrimage and be punctual. I/we certify that to the best of my knowledge, the information I/we provided while registering or applying is true, accurate and complete and any falsification subjects me to the offense of making a written false statement. I acknowledge that the decision to travel is mine and that I/we, therefore, assume liability for any loss or damage that may be incurred. I/we understand that in the case of any medical emergency, Pilgrimage Coordinator though may do their best possible effort, I/we shall be solely responsible for consequences and no claim shall lie against them from me or my relatives. I/we hereby understate that at all times during the Pilgrimage I/we will not do any illegal or immoral activity. I/we will not carry any inflammable item. I/we shall indemnify fellow passengers for any loss or claim owing to my conduct/ misconduct/indiscipline. I/we understand, I/we will take appropriate Travel insurance for my family and valuables.
+        <br><br>I & the above participants agree by the above Declaration.
+      </div>
+      <div style="height:20px;"></div>
+      <table>
+        <tr>
+          <td><b>Date : </b> 04/11/2022</td><td><b>Participant's Signature: </b></td>
+          <td><img style="border:1px dashed gray;" id="sign2" src="" /></td>
+        </tr>
+      </table>
+
+      <div style="height:20px;"></div>
+      <div style="padding:5px;text-align:justify;">
+        <div style="text-align:center !important"><b>Terms and Conditions</b></div><br>
+        I/We shall have no liability for any delay or cancellation due to circumstances beyond our control. The following shall be considered to be such circumstances: War or threat of war, accidents causing delays, exceptional weather conditions, fire and/or damage at a station, compliance with requests to the police, customs (or) other government officials and security services, deaths and accident, vandalism and terrorism, unforeseen traffic delays, strike/industrial action, riot or local disturbance or unrest problems caused by other participants, and other circumstances affecting passenger safety. We are not responsible for personal injury or loss of life owing to any reason during the Pilgrimage. In any eventuality, the program coordinator will intimate the person given in the application as family member/concerned person by fast mode of communication such SMS or email to their contact number. The relative/concerned person may call back and obtain more information.
+        Terms include any oral/written communication given from time to time. Any dispute or legal proceedings shall be resolved amicably by arbitration under Arbitration Act, 1940 and issues unresolved post arbitration will be subject to jurisdiction of courts in Mumbai only.
+        <br><br>I & the above participants agree by the above Declaration.
+      </div>
+      <div style="height:20px;"></div>
+      <table>
+        <tr>
+          <td><b>Date : </b> 04/11/2022</td><td><b>Participant's Signature: </b></td>
+          <td><img style="border:1px dashed gray;" id="sign3" src="" /></td>
+        </tr>
+      </table>
+
+      <!--Page 3-->
+      <div style="height:20px;"></div>
+      <div style="padding:5px;text-align:left;">
+        <div style="text-align:center !important"><b>Rules and Regulations & Terms & Conditions</b></div><br>
+        <ul>
+          <li>
+            HKM Pilgrimage Tours are being conducted purely for strengthening and enlivening our spiritual consciousness and to progress in devotional service.
+          </li>
+          <li>
+            Maintain devotional consciousness and not just sight-seeing.
+          </li>
+          <li>
+            Do not preach about your own beliefs/religion/rituals/spirituality which is contrary to the essence of
+the Vedic Literatures. Such discussions/clarifications are allowed at the end of the
+lectures/discourses during the Pilgrimage.
+          </li>
+          <li>
+            We do not serve Non-Veg/Egg. We serve Krishna Prasadam only.
+          </li>
+          <li>
+            We do not serve Tea/Coffee.
+          </li>
+          <li>
+            During the entire Pilgrimage every pilgrim should follow – No meat eating including egg, No
+intoxication, No illicit sex and No gambling.
+          </li>
+          <li>
+            Dress code –Indian Traditional Dress -Men (Kurta-Pajama/Dhoti) Women (Saree, Chudidar-Dupatta).
+Avoid skirts, minis, shorts & other fancy dresses.
+          </li>
+          <li>
+            The pilgrimage tour gives opportunity for people to be together and spend time together for
+considerable time. However, do not get into developing mundane love relations/illicit relations/make or propose business with Fellow Pilgrims. Failing which, the tour manager reserves the right to cancel the pilgrimage of the pilgrim without any refund of amount.
+          </li>
+          <li>
+            Lectures and discourses will be in English and Hindi.
+          </li>
+          <li>
+            Senior citizens who require special requirements like dolis/autos/coolies during the journey should
+bear the extra expenses for the same during the time of journey.
+          </li>
+          <li>
+            HKM Pilgrimage Department does not undertake any responsibility if the places of visit which is
+mentioned in itinerary is not covered by any reason.
+          </li>
+          <li>
+            Any person more than 60 years should be accompanied by a guardian or family member.
+          </li>
+          <li>
+            Passengers are requested to carry original photo ID card during journey.
+          </li>
+          <li>
+            Special Entrance ticket and other charges payable extra at the places of visit wherever applicable.
+          </li>
+        </ul>
+        <br>I & the above participants agree to follow the above rules and regulations.
+      </div>
+      <div style="height:20px;"></div>
+
+      <table>
+        <tr>
+          <td><b>Date : </b> 04/11/2022</td><td><b>Participant's Signature: </b></td>
+          <td><img style="border:1px dashed gray;" id="sign4" src="" /></td>
+        </tr>
+      </table>
+
+      <div style="text-align:left;">
+        <ol>
+          <li>
+            <b>Pilgrimage timings and itinerary are subject to change. Consequently, it may be revised at any time
+during the tour, with or without notice depending upon the exigencies of occasion.</b> We will inform you these amendments prior to the start of the tour or on tour. No grievances regarding any itinerary/ service change which we are constrained to make will be entertained from the tour participants during or after the tour.
+          </li>
+        </ol>
+      </div>
+
+      <div style="height:20px;"></div>
+      <div>
+        <div style="text-align:left;"><b><u>Accommodation –</u></b></div>
+        <div style="text-align:left;"><h4>We book standard & decent rooms with twin sharing / maximum of three sharing basis. We may book dormitories at some remote places OR places where it suites the Pilgrimage route plan. Pilgrims have to adjust accordingly.
+Extra person in a room will be provided with a mattress/bed.</h4></div>
+        <div style="text-align:left;"><h5><u><b> In case you require an extra room for your convenience the same will be arranged at an actual extra cost. Pilgrims, who arrive early OR depart
+          late at the accommodation destination by their own travel arrangements, have to pay extra charges for the days they need the guest house.</b></u><br></h5>
+            <h5>Handpicked good tourist hotels all offering private bath are specifically chosen keeping in mind the comforts of the tourist. Some of the hotels may be located in the cities, but to provide with comfortable hotels and reasonable prices, it is often necessary to use hotels away from city centers.
+          In some cases, the hotels/accommodation may not have all amenities like hot water, extra beds, etc. Participants have to adjust with the accommodation and not demand the tour manager for better accommodation.</h5>
+        </div>
+      </div>
+
+      <!-- Page 4-->
+
+      <div style="text-align:left;">
+        <b><u>Cancellation and Refund Policy –</u></b><br>
+        If due to any circumstances or personal reasons you have to cancel your Pilgrimage tour, the cancellation request must be sent to us in writing. Send an email to us at<br>
+        <span style="color:blue">vrjd@hkm-group.org</span> OR <span style="color:blue">dhgd@hkm-group.org</span><br>
+        <br>
+        <span style="font-size:17px;">The following <b>cancellation charges shall be payable by the pilgrim</b> on cancellation of the pilgrimage:</span>
+
+        <table>
+        <tr>
+          <td>0-2 days before Pilgrimage Tour Date</td>
+          <td>- 100% of the total cost</td>
+          <td>(No Refund)</td>
+        </tr>
+        <tr>
+          <td>2-5 days before Pilgrimage Tour Date</td>
+          <td>- 90% of the total cost</td>
+          <td>(10% Refund)</td>
+        </tr>
+        <tr>
+          <td>5-30 days before Pilgrimage Tour Date</td>
+          <td>- 75% of the total cost</td>
+          <td>(25% Refund)</td>
+        </tr>
+        <tr>
+          <td>30-45 days before Pilgrimage Tour Date</td>
+          <td>- 50% of the total cost</td>
+          <td>(50 % Refund)</td>
+        </tr>
+        <tr>
+          <td>>45 days before Pilgrimage Tour Date</td>
+          <td>- 20% of the total cost</td>
+          <td>(80% Refund)</td>
+        </tr>
+        </table>
+
+        <br>If the passengers discontinue journey while on tour should be given by writing, unused portion of the tour amount will not be refunded.
+HKM Pilgrimage Department, reserves rights to cancel seats.<br>
+If the pilgrimage is cancelled by us, amount paid by you will be fully refunded by A/c payee Cheque but no compensation is payable for consequential loss suffered. You may receive the amount only after 30 days of Cancellation.<br>
+No refunds will be made for non-working of A/C units of the coaches/rooms while on tour.
+        <br><br>
+        <b><u>Tour Extension Policy –</u></b><br>
+        <span style="font-size=17px;"><b>If due to any reason, the tour is extended, all pilgrims have to pay an extra amount which has to be paid during the tour. Extension of the tour is the right of Management.</b></span>
+        <br><br>
+        <b><u>Other Terms and Conditions –</u></b><br>
+        HKM Pilgrimage Department., does not accept any responsibility for delay or change, missed connection, political disturbance, strike, war, natural calamities, injury, death, sickness, accident, theft, consequential loss or expenses borne by the passengers.<br>
+        HKM Pilgrimage Department, on behalf of its management, employees, agents and representatives notify, that no liability will be attached for the loss of person or property caused or damaged, or suffered by the customer on account of deficiency in service rendered or to be rendered by the consent contractors or suppliers of such services including carriers and arranged hotels.<br>
+        Pilgrimage will be confirmed subject to minimum of breakeven points depending to the capacity of the vehicle; otherwise we hold the right to cancel the tour. Cancellation will be informed to you 10 days before the actual departure.<br>
+        HKM Pilgrimage Department, does not undertake any responsibility for non-reimbursement of LFC/LTC Claims.<br>
+        Single supplement: This will be charged extra for a person travelling alone or with family but wish to occupy a separate room. Kindly consult the office before booking. Cost depends on the tour chosen.<br>
+        Note: We advise you to book your flight tickets only after confirmation of our tour.<br>
+        Special group tours will be arranged exclusively as well as executive special tour packages according to your choice and budget for Schools, Colleges, Corporations or Organizations.<br>
+        All contents of this brochure are based on the information available at the time of publication. We reserve the right to change any brochure - information due to any event beyond our control.<br>
+        <br>I & the above participants agree to follow the above rules and regulations.<br>
+
+        <div style="height:20px;"></div>
+
+        <table>
+          <tr>
+            <td><b>Date : </b> 04/11/2022</td><td><b>Participant's Signature: </b></td>
+            <td><img style="border:1px dashed gray;" id="sign5" src="" /></td>
+          </tr>
+        </table>
+      </div>
+    </div><!--end of main (page div)-->
+</body>
+</html>

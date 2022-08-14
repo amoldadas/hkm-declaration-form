@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
     <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <script type="text/javascript" src = "https://momentjs.com/downloads/moment.js"></script>
 <script>
 /*
  * Signature Plugin
@@ -72,6 +73,7 @@ jQuery(document).ready(function(e) {
             {
                 points.push({x: x, y: y, break: false});
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                ctx.strokeStyle = '#00008b';
                 var p1 = points[0];
                 var p2 = points[1];
 
@@ -92,6 +94,7 @@ jQuery(document).ready(function(e) {
                 ctx.lineWidth = lineWidth;
                 ctx.lineTo(p1.x, p1.y);
                 ctx.stroke();
+
             }
 
             var calculateMiddlePoint = function(pointStart, pointEnd)
@@ -144,6 +147,13 @@ jQuery(document).ready(function(e) {
     <script>
         $(document).ready(function()
         {
+          //Set current Dates
+          $('#date1').html('<b>Date:</b> '+moment().format('DD-MMM-YYYY'));
+          $('#date2').html('<b>Date:</b> '+moment().format('DD-MMM-YYYY'));
+          $('#date3').html('<b>Date:</b> '+moment().format('DD-MMM-YYYY'));
+          $('#date4').html('<b>Date:</b> '+moment().format('DD-MMM-YYYY'));
+          $('#date5').html('<b>Date:</b> '+moment().format('DD-MMM-YYYY'));
+
             $('#myCanvas').sign({
                 resetButton: $('#resetSign'),
                 lineWidth: 5, // * Optional
@@ -152,18 +162,74 @@ jQuery(document).ready(function(e) {
             });
 
             // Convert canvas to image
-            document.getElementById('btn-sign').addEventListener("click", function(e) {
-                /*var canvas = document.querySelector('#myCanvas');
+            document.getElementById('btnSign').addEventListener("click", function(e) {
+            //$('#btnSign').click(function(e) {
 
-                var dataURL = $("#myCanvas").get(0).toDataURL("image/png");
+                //Verify at least mandatory details of at least 1 candidate are available
+                var isValid = validate();
+                if(isValid==true){
+                //Check if accepted aggreement checkbox
+                  if($('#aggreement').prop('checked')){
+                    drawlImage();
+                    //Check if signatere pad is not empty
+                    if($('#sign1').prop('src').length<3000){
+                      alert("Kindly draw signature properly!! Hare Krishna !!");
+                      //Reset Signature imgages
+                      $("#sign1").attr("src","");
+                      $("#sign2").attr("src","");
+                      $("#sign3").attr("src","");
+                      $("#sign4").attr("src","");
+                      $("#sign5").attr("src","");
+                    }else{
+                      //Generate and download Signed PDF
+                      CreatePDFfromHTML();
+                      alert("Your form has downloaded successfully, Kindly send it on HKM email ID. Thank you very much for your cooperation!!")
+                    }
+                  }else{
+                    alert("Kindly accept Terms & Conditions!! Hare Krishna !!");
+                  }
+                }
+            });
+            function validate(){
 
-                console.log('img url: ',dataURL);
-                downloadImage(dataURL, 'my-canvas.jpeg');*/
-                drawlImage();
-            });
-            document.getElementById('cmd').addEventListener("click", function(e) {
-              CreatePDFfromHTML();
-            });
+              if($('#pilgrimName').val().length<4){
+                alert("Kindly enter Pilgrim name!! Hare Krishna!!");
+                return false;
+              }
+
+              if($('#name1').val().length<3){
+                alert("Kindly enter at least 1 candidates valid name!! Hare Krishna!!");
+                return false;
+              }
+              if($('#gender1').val().length<4){
+                alert("Kindly select gender info for first candidate!! Hare Krishna!!");
+                return false;
+              }
+              if($('#dob1').val().length<10){
+                alert("Kindly enter correct Date of birth for first candidate!! Hare Krishna!!");
+                return false;
+              }
+              if($('#mob1').val().length<10){
+                alert("Kindly enter correct mobile number for first candidate!! Hare Krishna!!");
+                return false;
+              }
+              if($('#address').val().length<20){
+                alert("Kindly enter proper address!! Hare Krishna!!");
+                return false;
+              }
+              if($('#emergencyContact').val().length<15){
+                alert("Kindly enter proper contact person name with phone!! Hare Krishna!!");
+                return false;
+              }
+              if($('#idProofVal').text().length<2){
+                alert("Kindly select yes / no if ID proof is submitted or not!! Hare Krishna!!");
+                return false;
+              }
+              return true;
+            }
+            /*document.getElementById('cmd').addEventListener("click", function(e) {
+              //CreatePDFfromHTML();
+            });*/
 
             // Save | Download image
             function downloadImage(data, filename = 'untitled.jpeg') {
@@ -174,29 +240,26 @@ jQuery(document).ready(function(e) {
                 a.click();
             }
             function drawlImage() {
-                /*$("#canvasimg").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
-                $('#canvasimg').css('width', '10%');
-                $('#canvasimg').css('height', '10%');*/
 
                 $("#sign1").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
-                $('#sign1').css('width', '10%');
-                $('#sign1').css('height', '10%');
+                $('#sign1').css('width', '15%');
+                $('#sign1').css('height', '15%');
 
                 $("#sign2").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
-                $('#sign2').css('width', '10%');
-                $('#sign2').css('height', '10%');
+                $('#sign2').css('width', '15%');
+                $('#sign2').css('height', '15%');
 
                 $("#sign3").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
-                $('#sign3').css('width', '10%');
-                $('#sign3').css('height', '10%');
+                $('#sign3').css('width', '15%');
+                $('#sign3').css('height', '15%');
 
                 $("#sign4").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
-                $('#sign4').css('width', '10%');
-                $('#sign4').css('height', '10%');
+                $('#sign4').css('width', '15%');
+                $('#sign4').css('height', '15%');
 
                 $("#sign5").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
-                $('#sign5').css('width', '10%');
-                $('#sign5').css('height', '10%');
+                $('#sign5').css('width', '15%');
+                $('#sign5').css('height', '15%');
 
             }
 
@@ -220,11 +283,15 @@ jQuery(document).ready(function(e) {
                         pdf.addPage(PDF_Width, PDF_Height);
                         pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height*i)+(top_left_margin*4),canvas_image_width,canvas_image_height);
                     }
-                    pdf.save("Your_PDF_Name.pdf");
+                    pdf.save("HKM_YATRA_DECLARATION_"+$('#name1').val()+".pdf");
                     $(".page").hide();
                 });
             }
 
+            $('#pilgrimName').keyup(function() {
+               //console.log($(this).val());// will work here
+               $('#pilgrimNameVal').val($('#pilgrimName').val());
+            });
             //Update name value
             $('#name1').keyup(function() {
                $('#name1Val').text($(this).val());
@@ -375,17 +442,17 @@ jQuery(document).ready(function(e) {
             });
 
             //Update ID proof submitted or not
-            $('#yes').click(function() {
-               //console.log($(this).val());// will work here
+            $('#yes').on('click',function(e) {
+               //$('#yes').prop('checked',true);
                $('#idProofVal').text($(this).val());
             });
-            $('#no').click(function() {
-               //console.log($(this).val());// will work here
+            $('#no').on('click',function(e) {
+               //$('#no').prop('checked',true);
                $('#idProofVal').text($(this).val());
             });
 
             //Update source of Contact
-            $('#gitaLife').on('change', function() {
+            $('#gitaLife').on('change', function(e) {
                 manageSourceVal($('#sourcesVal').text(), $(this).val(), this.checked);
             });
 
@@ -436,18 +503,26 @@ jQuery(document).ready(function(e) {
                 $('#sourcesVal').text(sourceVal);
               }
             }
-
+            /*$('.page').click(function(e){
+                //e.stopPropagation();
+                //e.preventDefault();
+                return false;
+            });
+            $('#declarationForm').click(function(e){
+                //e.stopPropagation();
+                //e.preventDefault();
+                return false;
+            });*/
         });
 
         //Update declaration form
-        function updatePilgrimName(){
+        /*function updatePilgrimName(){
           var pilgrimName = document.getElementById('pilgrimName');
           var pilgrimNameVal = document.getElementById('pilgrimNameVal');
           pilgrimNameVal.value = pilgrimName.value;
-        }
+        }*/
     </script>
     <style>
-        /**/
         #myCanvas {
             border:4px solid #444;
             border-radius: 15px;
@@ -470,23 +545,35 @@ jQuery(document).ready(function(e) {
        border: 1px solid black;
        border-collapse: collapse;
      }
-     #pilgrimName{
+     #pilgrimName, #name1, #name2, #name3, #name4, #name5, #name6, #name7,
+      #emergencyContact, #address{
        width: 100%;
+     }
+     .text{
+       color:darkblue;
      }
     </style>
 </head>
 <body>
+    <div>
     <canvas id="myCanvas"></canvas>
-    <input type="button" value="Reset" id='resetSign'>
-    <button id="btn-sign">Sing the Declaration</button><button id="cmd">generate PDF</button>
-    <!--<img style="border:1px dashed gray;" id="canvasimg" src="" />-->
-    <div style="width:100%">
+    <input type="button" value="Reset" id='resetSign'/>
+    <br>
+    <br>
+    <input id="aggreement" type="checkbox" name="aggreement"/><label style="font-size:22px;color:darkblue">I have read all the details given below, in the declaration form, and agree with all terms & conditions.</lable><br>
+    <button id="btnSign">Sign & Download Form</button><br><br><!--<button id="cmd">generate PDF</button>-->
+
+    <span style="font-size:22px;color:darkred">Send downloaded Registration PDF file to Email:= (vrjd@hkm-group.org) ---OR--- (dhgd@hkm-group.org)</span>
+    <br>
+  </div>
+    <!--<img style="border:0px dashed gray;" id="canvasimg" src="" />-->
+    <div id="declarationForm"style="width:100%">
       <table>
         <tr>
-          <td>Enter pilgrimage name: </td><td><input style="width=100%;" type="text" id="pilgrimName" onkeyup="updatePilgrimName()"/></td>
+          <td>Enter pilgrimage name: </td><td><input style="width=100%;" type="text" id="pilgrimName" /></td>
         </tr>
         <tr>
-          <td><b>Name as in Adhar card(In Caps)</b></td><td><b>M/F</b></td><td><b>DOB</b></td><td><b>Mobile</b></td>
+          <td><b>Name as in Adhar card(In Caps)</b></td><td><b>M/F</b></td><td><b>DOB </b>(in DD/MM/YYYY)</td><td><b>Mobile</b></td>
         </tr>
         <!--Member 1-->
         <tr>
@@ -629,22 +716,22 @@ jQuery(document).ready(function(e) {
         </tr>
 
         <tr style="outline: thin solid">
-          <td><b>Address</b></td><td><textarea id="address">804, F wing, Lake Florence, Lake Homes, Powai 400076, Mumbai</textarea></td>
+          <td><b>Address</b></td><td><textarea id="address"></textarea></td>
         </tr>
         <tr style="outline: thin solid;padding-top:200px;">
-          <td><b>Emergency contact & name: </b></td><td><textarea id="emergencyContact">9960058969, Anandrao Dadas</textarea></td>
+          <td><b>Emergency contact & name: </b></td><td><textarea id="emergencyContact"></textarea></td>
         </tr>
         <tr>
-          <td><b>ID Proof submitted: </b></td><td><input type="radio" id="yes" name="idProof" value="Yes">
+          <td><b>ID Proof submitted: </b></td><td><input type="radio" id="yes" name="idProof" value="Yes"/>
           <label>Yes</label>
-          <input type="radio" id="no" name="idProof" value="No">
+          <input type="radio" id="no" name="idProof" value="No"/>
           <label>No</label></td>
         </tr>
         <tr>
           <td><b>Temple programs Attending: </b></td>
           <td>
             <input type="checkbox" id="gitaLife" name="gitaLife" value="Gita Life"/>
-            <label for="gitaLife">Gita Life</label>
+            <label >Gita Life</label>
 
             <input type="checkbox" id="sss" name="sss" value="SSS"/>
             <label for="sss">SSS</label>
@@ -668,65 +755,66 @@ jQuery(document).ready(function(e) {
       </table>
     </div>
 
+<!--//PDF DIV BEGINS-->
     <div class="page" style="display:block;" id="formDiv">
       <h2>Hare Krishna Movement-Mumbai Pilgrimages</h2>
       <p>Registration Form</p>
       <table>
         <tr>
-          <td style="width:15%;"><b>Name of the Pilgrimage Tour - </b></td><td style="width:80%;"><input type="text" id="pilgrimNameVal" style="width: 100%;border-width: 0 0 2px;"/></td><td style="width:5%;"><b>PILGRIMAGE</b></td>
+          <td style="width:15%;"><b>Name of the Pilgrimage Tour - </b></td><td style="width:80%;"><input type="text" id="pilgrimNameVal" class="text" style="width: 100%;height: 100%;border-width: 0 0 0.5px;font-size:18px;"/></td><td style="width:5%;"><b>PILGRIMAGE</b></td>
         </tr>
       </table>
       <table>
         <tr>
-          <td><b>No.</b></td><td><b>Name as Adhar Card (In Caps)</b></td><td><b>M/F</b></td><td><b>DOB</b></td><td><b>Mobile</b></td>
+          <td><b>No.</b></td><td><b>Name as Adhar Card (In Caps)</b></td><td><b>Gender (Male/Female)</b></td><td><b>DOB</b>(in DD/MM/YYYY)</td><td><b>Mobile</b></td>
         </tr>
-        <tr>
+        <tr class="text">
           <td>1</td><td id="name1Val"></td><td id="gender1Val"></td><td id="dob1Val"></td><td id="mob1Val"></td>
         </tr>
-        <tr>
+        <tr class="text">
           <td>2</td><td id="name2Val"></td><td id="gender2Val"></td><td id="dob2Val"></td><td id="mob2Val"></td>
         </tr>
-        <tr>
+        <tr class="text">
           <td>3</td><td id="name3Val"></td><td id="gender3Val"></td><td id="dob3Val"></td><td id="mob3Val"></td>
         </tr>
-        <tr>
+        <tr class="text">
           <td>4</td><td id="name4Val"></td><td id="gender4Val"></td><td id="dob4Val"></td><td id="mob4Val"></td>
         </tr>
-        <tr>
+        <tr class="text">
           <td>5</td><td id="name5Val"></td><td id="gender5Val"></td><td id="dob5Val"></td><td id="mob5Val"></td>
         </tr>
-        <tr>
+        <tr class="text">
           <td>6</td><td id="name6Val"></td><td id="gender6Val"></td><td id="dob6Val"></td><td id="mob6Val"></td>
         </tr>
-        <tr>
+        <tr class="text">
           <td>7</td><td id="name7Val"></td><td id="gender7Val"></td><td id="dob7Val"></td><td id="mob7Val"></td>
         </tr>
       </table>
       <div style="height:20px;"></div>
       <table>
         <tr>
-          <td><b>Address: </b></td><td id="addressVal">804, F wing, Lake Florence, Lake Homes, Powai 400076, Mumbai</td>
+          <td><b>Address: </b></td><td id="addressVal" class="text"></td>
+        </tr>
+      </table>
+
+      <div style="height:20px;"></div>
+      <table>
+        <tr >
+          <td><b>Emergency contact & name: </b></td><td id="emergencyContactVal" class="text"></td>
         </tr>
       </table>
 
       <div style="height:20px;"></div>
       <table>
         <tr>
-          <td><b>Emergency contact & name: </b></td><td id="emergencyContactVal">9960058969, Anandrao Dadas</td>
+          <td><b>ID Proof submitted : </b></td><td id="idProofVal" class="text"></td>
         </tr>
       </table>
 
       <div style="height:20px;"></div>
       <table>
         <tr>
-          <td><b>ID Proof submitted : </b></td><td id="idProofVal">Yes</td>
-        </tr>
-      </table>
-
-      <div style="height:20px;"></div>
-      <table>
-        <tr>
-          <td><b>Temple programs attending : </b></td><td id="sourcesVal"></td>
+          <td><b>Temple programs attending : </b></td><td id="sourcesVal" class="text"></td>
         </tr>
       </table>
       <div style="height:20px;"></div>
@@ -735,8 +823,8 @@ jQuery(document).ready(function(e) {
       <div style="height:20px;"></div>
       <table>
         <tr>
-          <td><b>Date : </b> 04/11/2022</td><td><b>Participant's Signature: </b></td>
-          <td><img style="border:1px dashed gray;" id="sign1" src="" /></td>
+          <td id="date1"><b>Date : </b></td><td><b>Participant's Signature: </b></td>
+          <td class="text"><img style="border:0px dashed gray;" id="sign1" src="" /></td>
         </tr>
       </table>
       <!--Page 2-->
@@ -749,8 +837,8 @@ I and the above participants hereby declare that I/we will abide by the rules an
       <div style="height:20px;"></div>
       <table>
         <tr>
-          <td><b>Date : </b> 04/11/2022</td><td><b>Participant's Signature: </b></td>
-          <td><img style="border:1px dashed gray;" id="sign2" src="" /></td>
+          <td id="date2"><b>Date : </b> </td><td><b>Participant's Signature: </b></td>
+          <td><img style="border:0px dashed gray;" id="sign2" src="" /></td>
         </tr>
       </table>
 
@@ -764,8 +852,8 @@ I and the above participants hereby declare that I/we will abide by the rules an
       <div style="height:20px;"></div>
       <table>
         <tr>
-          <td><b>Date : </b> 04/11/2022</td><td><b>Participant's Signature: </b></td>
-          <td><img style="border:1px dashed gray;" id="sign3" src="" /></td>
+          <td id="date3"><b>Date : </b> </td><td><b>Participant's Signature: </b></td>
+          <td><img style="border:0px dashed gray;" id="sign3" src="" /></td>
         </tr>
       </table>
 
@@ -830,8 +918,8 @@ mentioned in itinerary is not covered by any reason.
 
       <table>
         <tr>
-          <td><b>Date : </b> 04/11/2022</td><td><b>Participant's Signature: </b></td>
-          <td><img style="border:1px dashed gray;" id="sign4" src="" /></td>
+          <td id="date4"><b>Date : </b> </td><td><b>Participant's Signature: </b></td>
+          <td><img style="border:0px dashed gray;" id="sign4" src="" /></td>
         </tr>
       </table>
 
@@ -916,8 +1004,8 @@ No refunds will be made for non-working of A/C units of the coaches/rooms while 
 
         <table>
           <tr>
-            <td><b>Date : </b> 04/11/2022</td><td><b>Participant's Signature: </b></td>
-            <td><img style="border:1px dashed gray;" id="sign5" src="" /></td>
+            <td id="date5"><b>Date : </b></td><td><b>Participant's Signature: </b></td>
+            <td><img style="border:0px dashed gray;" id="sign5" src="" /></td>
           </tr>
         </table>
       </div>

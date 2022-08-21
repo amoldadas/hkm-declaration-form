@@ -6,6 +6,9 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
     <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
     <script type="text/javascript" src = "https://momentjs.com/downloads/moment.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.js" data-modules="effect effect-bounce effect-blind effect-bounce effect-clip effect-drop effect-fold effect-slide"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
 <script>
 /*
  * Signature Plugin
@@ -192,44 +195,76 @@ jQuery(document).ready(function(e) {
             });
             function validate(){
 
-              if($('#pilgrimName').val().length<4){
-                alert("Kindly enter Pilgrim name!! Hare Krishna!!");
+              if($('#pilgrimNameVal').val().length<4){
+                focusInvalidElement("Kindly enter Pilgrim name!! Hare Krishna!!",$('#pilgrimNameVal'));
                 return false;
               }
 
-              if($('#name1').val().length<3){
-                alert("Kindly enter at least 1 candidates valid name!! Hare Krishna!!");
+              if($('#name1ValInput').val().length<3){
+                //alert("Kindly enter at least 1 candidates valid name!! Hare Krishna!!");
+                focusInvalidElement("Kindly enter at least 1 candidates valid name!! Hare Krishna!!",$('#name1ValInput'));
                 return false;
               }
               if($('#gender1').val().length<4){
-                alert("Kindly select gender info for first candidate!! Hare Krishna!!");
+                //alert("Kindly select gender info for first candidate!! Hare Krishna!!");
+                focusInvalidElement("Kindly select gender info for first candidate!! Hare Krishna!!",$('#gender1'));
                 return false;
               }
               if($('#dob1').val().length<10){
-                alert("Kindly enter correct Date of birth for first candidate!! Hare Krishna!!");
+                //alert("Kindly enter correct Date of birth for first candidate!! Hare Krishna!!");
+                focusInvalidElement("Kindly enter correct Date of birth for first candidate!! Hare Krishna!!",$('#dob1'));
                 return false;
               }
               if($('#mob1').val().length<10){
-                alert("Kindly enter correct mobile number for first candidate!! Hare Krishna!!");
+                //alert("Kindly enter correct mobile number for first candidate!! Hare Krishna!!");
+                focusInvalidElement("Kindly enter correct mobile number for first candidate!! Hare Krishna!!",$('#mob1'));
                 return false;
               }
               if($('#address').val().length<20){
-                alert("Kindly enter proper address!! Hare Krishna!!");
+                //alert("Kindly enter proper address!! Hare Krishna!!");
+                focusInvalidElement("Kindly enter proper address!! Hare Krishna!!",$('#address'));
                 return false;
               }
-              if($('#emergencyContact').val().length<15){
-                alert("Kindly enter proper contact person name with phone!! Hare Krishna!!");
+              if($('#emergencyContactValInput').val().length<10){
+                //alert("Kindly enter proper contact person name!! Hare Krishna!!");
+                focusInvalidElement("Kindly enter proper contact!! Hare Krishna!!",$('#emergencyContactValInput'));
                 return false;
               }
-              if($('#idProofVal').text().length<2){
-                alert("Kindly select yes / no if ID proof is submitted or not!! Hare Krishna!!");
+              if($('#emergencyContactNameValInput').val().length<3){
+                //alert("Kindly enter proper contact!! Hare Krishna!!");
+                focusInvalidElement("Kindly enter proper contact person name!! Hare Krishna!!",$('#emergencyContactNameValInput'));
                 return false;
               }
+
+              if($('#aadhar').prop('checked')==false && $('#passport').prop('checked')==false &&
+                $('#drivingL').prop('checked')==false && $('#voterId').prop('checked')==false){
+                //alert("Kindly Submit any ID proof and choose proper option!! Hare Krishna!!");
+                //document.getElementById("aadhar").focus();
+                $('#idProofDiv').css({"border-color": "#FF0000",
+                  "border-width":"1px",
+                  "border-style":"solid"});
+                alert("Kindly select any ID proof which you have submit!! Hare Krishna!!");
+                $("html, body").animate({
+                  scrollTop: $('#idProofDiv').height()+400
+                }, 1500);
+                return false;
+              }
+
+              //Check if Name is valid from second line, then make sure other details are also present
+              //Remove validation markings
+              $('#idProofDiv').removeAttr('style');
+              $(".mandatory").hide();
+
               return true;
             }
-            /*document.getElementById('cmd').addEventListener("click", function(e) {
-              //CreatePDFfromHTML();
-            });*/
+
+            function focusInvalidElement(message, element){
+              alert(message);
+              element.focus();
+              $("html, body").animate({
+                scrollTop: element.height()+400
+              }, 1500);
+            }
 
             // Save | Download image
             function downloadImage(data, filename = 'untitled.jpeg') {
@@ -288,198 +323,16 @@ jQuery(document).ready(function(e) {
                 });
             }
 
-            $('#pilgrimName').keyup(function() {
+            /*$('#pilgrimName').keyup(function() {
                //console.log($(this).val());// will work here
                $('#pilgrimNameVal').val($('#pilgrimName').val());
-            });
-            //Update name value
-            $('#name1').keyup(function() {
-               $('#name1Val').text($(this).val());
-            });
+            });*/
 
-            $('#name2').keyup(function() {
-               $('#name2Val').text($(this).val());
-            });
-
-            $('#name3').keyup(function() {
-               $('#name3Val').text($(this).val());
-            });
-
-            $('#name4').keyup(function() {
-               $('#name4Val').text($(this).val());
-            });
-
-            $('#name5').keyup(function() {
-               $('#name5Val').text($(this).val());
-            });
-
-            $('#name6').keyup(function() {
-               $('#name6Val').text($(this).val());
-            });
-
-            $('#name7').keyup(function() {
-               $('#name7Val').text($(this).val());
-            });
-
-            //Update gender values
-
-            $('#gender1').change(function() {
-               console.log($(this).val());// will work here
-               $('#gender1Val').text($(this).val());
-            });
-
-            $('#gender2').change(function() {
-               console.log($(this).val());// will work here
-               $('#gender2Val').text($(this).val());
-            });
-
-            $('#gender3').change(function() {
-               console.log($(this).val());// will work here
-               $('#gender3Val').text($(this).val());
-            });
-
-            $('#gender4').change(function() {
-               console.log($(this).val());// will work here
-               $('#gender4Val').text($(this).val());
-            });
-
-            $('#gender5').change(function() {
-               console.log($(this).val());// will work here
-               $('#gender5Val').text($(this).val());
-            });
-
-            $('#gender6').change(function() {
-               console.log($(this).val());// will work here
-               $('#gender6Val').text($(this).val());
-            });
-
-            $('#gender7').change(function() {
-               console.log($(this).val());// will work here
-               $('#gender7Val').text($(this).val());
-            });
-            //Update dob value
-            $('#dob1').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#dob1Val').text($(this).val());
-            });
-
-            $('#dob2').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#dob2Val').text($(this).val());
-            });
-
-            $('#dob3').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#dob3Val').text($(this).val());
-            });
-
-            $('#dob4').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#dob4Val').text($(this).val());
-            });
-
-            $('#dob5').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#dob5Val').text($(this).val());
-            });
-
-            $('#dob6').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#dob6Val').text($(this).val());
-            });
-
-            $('#dob7').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#dob7Val').text($(this).val());
-            });
-
-            //Update mob value
-            $('#mob1').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#mob1Val').text($(this).val());
-            });
-
-            $('#mob2').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#mob2Val').text($(this).val());
-            });
-
-            $('#mob3').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#mob3Val').text($(this).val());
-            });
-
-            $('#mob4').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#mob4Val').text($(this).val());
-            });
-
-            $('#mob5').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#mob5Val').text($(this).val());
-            });
-
-            $('#mob6').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#mob6Val').text($(this).val());
-            });
-
-            $('#mob7').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#mob7Val').text($(this).val());
-            });
-
-            //Update Address
-            $('#address').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#addressVal').text($(this).val());
-            });
-
-            //Update Emergency Contact
-            $('#emergencyContact').keyup(function() {
-               //console.log($(this).val());// will work here
-               $('#emergencyContactVal').text($(this).val());
-            });
-
-            //Update ID proof submitted or not
-            $('#yes').on('click',function(e) {
-               //$('#yes').prop('checked',true);
-               $('#idProofVal').text($(this).val());
-            });
-            $('#no').on('click',function(e) {
-               //$('#no').prop('checked',true);
-               $('#idProofVal').text($(this).val());
-            });
-
-            //Update source of Contact
-            $('#gitaLife').on('change', function(e) {
-                manageSourceVal($('#sourcesVal').text(), $(this).val(), this.checked);
-            });
-
-            $('#sss').on('change', function() {
-              manageSourceVal($('#sourcesVal').text(), $(this).val(), this.checked);
-            });
-
-            $('#folk').on('change', function() {
-              manageSourceVal($('#sourcesVal').text(), $(this).val(), this.checked);
-            });
-
-            $('#sundayVisits').on('change', function() {
-              manageSourceVal($('#sourcesVal').text(), $(this).val(), this.checked);
-            });
-
-            $('#zoom').on('change', function() {
-              manageSourceVal($('#sourcesVal').text(), $(this).val(), this.checked);
-            });
-
-            $('#other').on('change', function() {
-              manageSourceVal($('#sourcesVal').text(), $(this).val(), this.checked);
-            });
 
             $('#none').on('change', function() {
               var checked = this.checked
               if(checked){
-                $('#sourcesVal').text('');
+                //$('#sourcesVal').text('');
                 //uncheck all other checkboxes
                 $('#gitaLife').prop('checked', false);
                 $('#sss').prop('checked', false);
@@ -490,7 +343,7 @@ jQuery(document).ready(function(e) {
               }
             });
 
-            function manageSourceVal(sourceVal, currentVal, checked){
+            /*function manageSourceVal(sourceVal, currentVal, checked){
               //var sourceVal = $('#sourcesVal').text();
               if(checked){
                 if(sourceVal.length){
@@ -502,28 +355,118 @@ jQuery(document).ready(function(e) {
                 sourceVal = sourceVal.replace(', '+currentVal,'').replace(currentVal,'');
                 $('#sourcesVal').text(sourceVal);
               }
-            }
-            /*$('.page').click(function(e){
-                //e.stopPropagation();
-                //e.preventDefault();
-                return false;
+            }*/
+
+            $( ".dob1" ).datepicker({
+              dateFormat: 'dd/mm/yy',//check change
+              changeMonth: true,
+              changeYear: true,
+              yearRange: '1950:2022'
             });
-            $('#declarationForm').click(function(e){
-                //e.stopPropagation();
-                //e.preventDefault();
-                return false;
-            });*/
+
+            $("#name1ValInput,#emergencyContactNameValInput").bind("keypress", function (event) {
+              if (event.charCode!=0) {
+                  var regex = new RegExp("^[a-zA-Z ]+$");
+                  var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                  if (!regex.test(key)) {
+                      event.preventDefault();
+                      return false;
+                  }
+              }
+            });
+
+            $("#address").bind("keypress", function (event) {
+              if (event.charCode!=0) {
+                  var regex = new RegExp("^[a-zA-Z 0-9\s,.'-/]+$");
+                  var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                  if (!regex.test(key)) {
+                      event.preventDefault();
+                      return false;
+                  }
+              }
+            });
+
+            $("#sign1CB").click(function(){
+              //Add signature1
+              $("#sign1").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
+              $('#sign1').css('width', '15%');
+              $('#sign1').css('height', '15%');
+              //scroll back up
+              if($('#sign1').prop('src').length<3000){
+                $("#sign1").attr("src","");
+                $(this).prop("checked",false);
+                $("#myCanvas").focus();
+                $("html, body").animate({
+                    scrollTop: 0
+                }, 1500);
+              }
+            });
+
+            $("#sign2CB").click(function(){
+              //Add signature1
+              $("#sign2").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
+              $('#sign2').css('width', '15%');
+              $('#sign2').css('height', '15%');
+              //scroll back up
+              if($('#sign2').prop('src').length<3000){
+                $("#sign2").attr("src","");
+                $(this).prop("checked",false);
+                $("html, body").animate({
+                    scrollTop: 0
+                }, 1500);
+              }
+            });
+
+            $("#sign3CB").click(function(){
+              //Add signature1
+              $("#sign3").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
+              $('#sign3').css('width', '15%');
+              $('#sign3').css('height', '15%');
+              //scroll back up
+              if($('#sign3').prop('src').length<3000){
+                $("#sign3").attr("src","");
+                $(this).prop("checked",false);
+                $("html, body").animate({
+                    scrollTop: 0
+                }, 1500);
+              }
+            });
+
+            $("#sign4CB").click(function(){
+              //Add signature1
+              $("#sign4").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
+              $('#sign4').css('width', '15%');
+              $('#sign4').css('height', '15%');
+              //scroll back up
+              if($('#sign4').prop('src').length<3000){
+                $("#sign4").attr("src","");
+                $(this).prop("checked",false);
+                $("html, body").animate({
+                    scrollTop: 0
+                }, 1500);
+              }
+            });
+
+            $("#sign5CB").click(function(){
+              //Add signature1
+              $("#sign5").attr("src", $("#myCanvas").get(0).toDataURL("image/png"));
+              $('#sign5').css('width', '15%');
+              $('#sign5').css('height', '15%');
+              //scroll back up
+              if($('#sign5').prop('src').length<3000){
+                $("#sign5").attr("src","");
+                $(this).prop("checked",false);
+                $("html, body").animate({
+                    scrollTop: 0
+                }, 1500);
+              }
+            });
         });
 
-        //Update declaration form
-        /*function updatePilgrimName(){
-          var pilgrimName = document.getElementById('pilgrimName');
-          var pilgrimNameVal = document.getElementById('pilgrimNameVal');
-          pilgrimNameVal.value = pilgrimName.value;
-        }*/
+
     </script>
     <style>
-        #myCanvas {
+        #myCanvas,#test {
             border:4px solid #444;
             border-radius: 15px;
         }
@@ -552,216 +495,46 @@ jQuery(document).ready(function(e) {
      .text{
        color:darkblue;
      }
+     .border{
+       width: 100%;
+       height: 100%;
+       border-width: 0 0 0.5px;
+       font-size:18px;
+     }
+     .mandatory{
+       color: red;
+     }
+     #btnSign{
+        color: darkred;
+        background: powderblue;
+        border-radius: 5px;
+        padding: 3px;
+        font-size: 20px;
+     }
+
+     #aadhar{
+       border: 4px solid black;
+     }
     </style>
 </head>
 <body>
-    <div>
+
+  <div id="canvasDiv">
     <canvas id="myCanvas"></canvas>
     <input type="button" value="Reset" id='resetSign'/>
     <br>
     <br>
-    <input id="aggreement" type="checkbox" name="aggreement"/><label style="font-size:22px;color:darkblue">I have read all the details given below, in the declaration form, and agree with all terms & conditions.</lable><br>
-    <button id="btnSign">Sign & Download Form</button><br><br><!--<button id="cmd">generate PDF</button>-->
 
-    <span style="font-size:22px;color:darkred">Send downloaded Registration PDF file to Email:= (vrjd@hkm-group.org) ---OR--- (dhgd@hkm-group.org)</span>
-    <br>
   </div>
-    <!--<img style="border:0px dashed gray;" id="canvasimg" src="" />-->
-    <div id="declarationForm"style="width:100%">
-      <table>
-        <tr>
-          <td>Enter pilgrimage name: </td><td><input style="width=100%;" type="text" id="pilgrimName" /></td>
-        </tr>
-        <tr>
-          <td><b>Name as in Adhar card(In Caps)</b></td><td><b>M/F</b></td><td><b>DOB </b>(in DD/MM/YYYY)</td><td><b>Mobile</b></td>
-        </tr>
-        <!--Member 1-->
-        <tr>
-          <td><input id="name1" type="text" value="" /></td>
-          <td>
-            <select id="gender1">
-              <option>
-
-              </option>
-              <option>
-                Male
-              </option>
-              <option>
-                Female
-              </option>
-            </select
-          </td>
-          <td><input type="text" id="dob1" name="dob" value=""/></td>
-          <td><input type="text" id="mob1" name="mob" value=""/></td>
-        </tr>
-
-        <!--Member 2-->
-        <tr>
-          <td><input id="name2" type="text" value=""/></td>
-          <td>
-            <select id="gender2">
-              <option>
-
-              </option>
-              <option>
-                Male
-              </option>
-              <option>
-                Female
-              </option>
-            </select
-          </td>
-          <td><input type="text" id="dob2" name="dob" value=""/></td>
-          <td><input type="text" id="mob2" name="mob" value=""/></td>
-        </tr>
-
-        <!--Member 3-->
-        <tr>
-          <td><input id="name3" type="text" value=""/></td>
-          <td>
-            <select id="gender3">
-              <option>
-
-              </option>
-              <option>
-                Male
-              </option>
-              <option>
-                Female
-              </option>
-            </select
-          </td>
-          <td><input type="text" id="dob3" name="dob" value=""/></td>
-          <td><input type="text" id="mob3" name="mob" value=""/></td>
-        </tr>
-
-        <!--Member 4-->
-        <tr>
-          <td><input id="name4" type="text" value=""/></td>
-          <td>
-            <select id="gender4">
-              <option>
-
-              </option>
-              <option>
-                Male
-              </option>
-              <option>
-                Female
-              </option>
-            </select
-          </td>
-          <td><input type="text" id="dob4" name="dob" value=""/></td>
-          <td><input type="text" id="mob4" name="mob" value=""/></td>
-        </tr>
-
-        <!--Member 5-->
-        <tr>
-          <td><input id="name5" type="text" value=""/></td>
-          <td>
-            <select id="gender5">
-              <option>
-
-              </option>
-              <option>
-                Male
-              </option>
-              <option>
-                Female
-              </option>
-            </select
-          </td>
-          <td><input type="text" id="dob5" name="dob" value=""/></td>
-          <td><input type="text" id="mob5" name="mob" value=""/></td>
-        </tr>
-
-        <!--Member 6-->
-        <tr>
-          <td><input id="name6" type="text" value=""/></td>
-          <td>
-            <select id="gender6">
-              <option>
-
-              </option>
-              <option>
-                Male
-              </option>
-              <option>
-                Female
-              </option>
-            </select
-          </td>
-          <td><input type="text" id="dob6" name="dob" value=""/></td>
-          <td><input type="text" id="mob6" name="mob" value=""/></td>
-        </tr>
-
-        <!--Member 7-->
-        <tr>
-          <td><input id="name7" type="text" value=""/></td>
-          <td>
-            <select id="gender7">
-              <option>
-
-              </option>
-              <option>
-                Male
-              </option>
-              <option>
-                Female
-              </option>
-            </select
-          </td>
-          <td><input type="text" id="dob7" name="dob" value=""/></td>
-          <td><input type="text" id="mob7" name="mob" value=""/></td>
-        </tr>
-
-        <tr style="outline: thin solid">
-          <td><b>Address</b></td><td><textarea id="address"></textarea></td>
-        </tr>
-        <tr style="outline: thin solid;padding-top:200px;">
-          <td><b>Emergency contact & name: </b></td><td><textarea id="emergencyContact"></textarea></td>
-        </tr>
-        <tr>
-          <td><b>ID Proof submitted: </b></td><td><input type="radio" id="yes" name="idProof" value="Yes"/>
-          <label>Yes</label>
-          <input type="radio" id="no" name="idProof" value="No"/>
-          <label>No</label></td>
-        </tr>
-        <tr>
-          <td><b>Temple programs Attending: </b></td>
-          <td>
-            <input type="checkbox" id="gitaLife" name="gitaLife" value="Gita Life"/>
-            <label >Gita Life</label>
-
-            <input type="checkbox" id="sss" name="sss" value="SSS"/>
-            <label for="sss">SSS</label>
-
-            <input type="checkbox" id="folk" name="folk" value="FOLK"/>
-            <label for="folk">FOLK</label>
-
-            <input type="checkbox" id="sundayVisits" name="sundayVisits" value="Sunday Visits"/>
-            <label for="sundayVisits">Sunday Visits</label>
-
-            <input type="checkbox" id="zoom" name="zoom" value="Zoom Online"/>
-            <label for="zoom">Zoom Online</label>
-
-            <input type="checkbox" id="other" name="other" value="Other"/>
-            <label for="other">Other</label>
-
-            <input type="checkbox" id="none" name="none" value = "None"/>
-            <label for="none">None</label>
-          </td>
-        </tr>
-      </table>
-    </div>
-
 <!--//PDF DIV BEGINS-->
     <div class="page" style="display:block;" id="formDiv">
+      <!--Signature pad and buttons section-->
+
       <h2>Hare Krishna Movement-Mumbai Pilgrimages</h2>
       <p>Registration Form</p>
       <table>
         <tr>
-          <td style="width:15%;"><b>Name of the Pilgrimage Tour - </b></td><td style="width:80%;"><input type="text" id="pilgrimNameVal" class="text" style="width: 100%;height: 100%;border-width: 0 0 0.5px;font-size:18px;"/></td><td style="width:5%;"><b>PILGRIMAGE</b></td>
+          <td style="width:15%;"><b>Name of the Pilgrimage Tour - </b></td><td style="width:80%;"><span class="mandatory">*</span><input type="text" id="pilgrimNameVal" class="text" style="width: 100%;height: 100%;border-width: 0 0 0.5px;font-size:18px;"/></td><td style="width:5%;"><b>PILGRIMAGE</b></td>
         </tr>
       </table>
       <table>
@@ -769,52 +542,236 @@ jQuery(document).ready(function(e) {
           <td><b>No.</b></td><td><b>Name as Adhar Card (In Caps)</b></td><td><b>Gender (Male/Female)</b></td><td><b>DOB</b>(in DD/MM/YYYY)</td><td><b>Mobile</b></td>
         </tr>
         <tr class="text">
-          <td>1</td><td id="name1Val"></td><td id="gender1Val"></td><td id="dob1Val"></td><td id="mob1Val"></td>
+          <td>1</td><td id="name1Val"><span class="mandatory">*</span><input id="name1ValInput" class ="border text" type="text"/> </td>
+          <td id="gender1Val"><span class="mandatory">*</span>
+            <select id="gender1" class="border">
+              <option>
+
+              </option>
+              <option>
+                Male
+              </option>
+              <option>
+                Female
+              </option>
+            </select>
+          </td>
+          <td id="dob1Val"><span class="mandatory">*</span><input id="dob1" class ="border text dob1" type="text"/></td>
+          <td id="mob1Val"><span class="mandatory">*</span><input id="mob1" class ="border text" type="number"/></td>
         </tr>
         <tr class="text">
-          <td>2</td><td id="name2Val"></td><td id="gender2Val"></td><td id="dob2Val"></td><td id="mob2Val"></td>
+          <td>2</td>
+          <td id="name2Val">
+            <span class="mandatory">*</span><input id="name2ValInput" class ="border text" type="text"/>
+          </td>
+          <td id="gender2Val">
+            <span class="mandatory">*</span>
+              <select id="gender2" class="border">
+                <option>
+                </option>
+                <option>
+                  Male
+                </option>
+                <option>
+                  Female
+                </option>
+              </select>
+          </td>
+          <td id="dob2Val">
+            <span class="mandatory">*</span><input class ="border text dob1" type="text"/>
+          </td>
+          <td id="mob2Val">
+            <span class="mandatory">*</span><input class ="border text" type="number"/>
+          </td>
         </tr>
         <tr class="text">
-          <td>3</td><td id="name3Val"></td><td id="gender3Val"></td><td id="dob3Val"></td><td id="mob3Val"></td>
+          <td>3</td>
+          <td id="name3Val">
+            <span class="mandatory">*</span><input id="name2ValInput" class ="border text" type="text"/>
+          </td>
+          <td id="gender3Val">
+            <span class="mandatory">*</span>
+              <select id="gender2" class="border">
+                <option>
+                </option>
+                <option>
+                  Male
+                </option>
+                <option>
+                  Female
+                </option>
+              </select>
+          </td>
+          <td id="dob3Val">
+            <span class="mandatory">*</span><input class ="border text dob1" type="text"/>
+          </td>
+          <td id="mob3Val">
+            <span class="mandatory">*</span><input class ="border text" type="number"/>
+          </td>
         </tr>
         <tr class="text">
-          <td>4</td><td id="name4Val"></td><td id="gender4Val"></td><td id="dob4Val"></td><td id="mob4Val"></td>
+          <td>4</td>
+          <td id="name4Val">
+            <span class="mandatory">*</span><input id="name2ValInput" class ="border text" type="text"/>
+          </td>
+          <td id="gender4Val">
+            <span class="mandatory">*</span>
+              <select id="gender2" class="border">
+                <option>
+                </option>
+                <option>
+                  Male
+                </option>
+                <option>
+                  Female
+                </option>
+              </select>
+          </td>
+          <td id="dob4Val">
+            <span class="mandatory">*</span><input class ="border text dob1" type="text"/>
+          </td>
+          <td id="mob4Val">
+            <span class="mandatory">*</span><input class ="border text" type="number"/>
+          </td>
         </tr>
         <tr class="text">
-          <td>5</td><td id="name5Val"></td><td id="gender5Val"></td><td id="dob5Val"></td><td id="mob5Val"></td>
+          <td>5</td>
+          <td id="name5Val">
+            <span class="mandatory">*</span><input id="name2ValInput" class ="border text" type="text"/>
+          </td>
+          <td id="gender5Val">
+            <span class="mandatory">*</span>
+              <select id="gender2" class="border">
+                <option>
+                </option>
+                <option>
+                  Male
+                </option>
+                <option>
+                  Female
+                </option>
+              </select>
+          </td>
+          <td id="dob5Val">
+            <span class="mandatory">*</span><input class ="border text dob1" type="text"/>
+          </td>
+          <td id="mob5Val">
+            <span class="mandatory">*</span><input class ="border text" type="number"/>
+          </td>
         </tr>
         <tr class="text">
-          <td>6</td><td id="name6Val"></td><td id="gender6Val"></td><td id="dob6Val"></td><td id="mob6Val"></td>
+          <td>6</td>
+          <td id="name6Val">
+            <span class="mandatory">*</span><input id="name2ValInput" class ="border text" type="text"/>
+          </td>
+          <td id="gender6Val">
+            <span class="mandatory">*</span>
+              <select id="gender2" class="border">
+                <option>
+                </option>
+                <option>
+                  Male
+                </option>
+                <option>
+                  Female
+                </option>
+              </select>
+          </td>
+          <td id="dob6Val">
+            <span class="mandatory">*</span><input class ="border text dob1" type="text"/>
+          </td>
+          <td id="mob6Val">
+            <span class="mandatory">*</span><input class ="border text" type="number"/>
+          </td>
         </tr>
         <tr class="text">
-          <td>7</td><td id="name7Val"></td><td id="gender7Val"></td><td id="dob7Val"></td><td id="mob7Val"></td>
+          <td>7</td>
+          <td id="name7Val">
+            <span class="mandatory">*</span><input id="name2ValInput" class ="border text" type="text"/>
+          </td>
+          <td id="gender7Val">
+            <span class="mandatory">*</span>
+              <select id="gender2" class="border">
+                <option>
+                </option>
+                <option>
+                  Male
+                </option>
+                <option>
+                  Female
+                </option>
+              </select>
+          </td>
+          <td id="dob7Val">
+            <span class="mandatory">*</span><input class ="border text dob1" type="text"/>
+          </td>
+          <td id="mob7Val">
+            <span class="mandatory">*</span><input class ="border text" type="number"/>
+          </td>
         </tr>
       </table>
       <div style="height:20px;"></div>
       <table>
         <tr>
-          <td><b>Address: </b></td><td id="addressVal" class="text"></td>
+          <td><b>Address: </b></td><td id="addressVal" class="text"><span class="mandatory">*</span><textarea id="address" class="border text"></textarea></td>
         </tr>
       </table>
 
       <div style="height:20px;"></div>
       <table>
         <tr >
-          <td><b>Emergency contact & name: </b></td><td id="emergencyContactVal" class="text"></td>
+          <td><b>Emergency Contact: </b></td><td id="emergencyContactVal" class="text"><span class="mandatory">*</span><input id="emergencyContactValInput" class ="border text" type="number"/></td>
+          <td><b>Emergency Contact Name: </b></td><td id="emergencyContactNameVal" class="text"><span class="mandatory">*</span><input id="emergencyContactNameValInput" class ="border text" type="text"/></td>
         </tr>
       </table>
 
       <div style="height:20px;"></div>
       <table>
         <tr>
-          <td><b>ID Proof submitted : </b></td><td id="idProofVal" class="text"></td>
+          <td><b>ID Proof submitted : </b></td>
+          <td id="idProofVal" class="text">
+            <div id="idProofDiv">
+              <input type="checkbox" id="aadhar" name="aadhar" value="Aadhar"/>
+              <label for="adhar">Aadhar</label>
+
+              <input type="checkbox" id="passport" name="passport" value="Passport"/>
+              <label for="passport">Passport</label>
+
+              <input type="checkbox" id="drivingL" name="drivingL" value="Driving License"/>
+              <label for="drivingL">Driving License</label>
+
+              <input type="checkbox" id="voterId" name="voterId" value="Zoom Online"/>
+              <label for="voterId">Voter ID</label>
+            </div>
+          </td>
         </tr>
       </table>
 
       <div style="height:20px;"></div>
       <table>
         <tr>
-          <td><b>Temple programs attending : </b></td><td id="sourcesVal" class="text"></td>
+          <td><b>Temple programs attending : </b></td>
+          <td id="sourcesVal" class="text"><input type="checkbox" id="gitaLife" name="gitaLife" value="Gita Life"/>
+          <label >Gita Life</label>
+
+          <input type="checkbox" id="sss" name="sss" value="SSS"/>
+          <label for="sss">SSS</label>
+
+          <input type="checkbox" id="folk" name="folk" value="FOLK"/>
+          <label for="folk">FOLK</label>
+
+          <input type="checkbox" id="sundayVisits" name="sundayVisits" value="Sunday Visits"/>
+          <label for="sundayVisits">Sunday Visits</label>
+
+          <input type="checkbox" id="zoom" name="zoom" value="Zoom Online"/>
+          <label for="zoom">Zoom Online</label>
+
+          <input type="checkbox" id="other" name="other" value="Other"/>
+          <label for="other">Other</label>
+
+          <input type="checkbox" id="none" name="none" value = "None"/>
+          <label for="none">None</label>
+        </td>
         </tr>
       </table>
       <div style="height:20px;"></div>
@@ -823,7 +780,9 @@ jQuery(document).ready(function(e) {
       <div style="height:20px;"></div>
       <table>
         <tr>
-          <td id="date1"><b>Date : </b></td><td><b>Participant's Signature: </b></td>
+          <td id="date1"><b>Date : </b></td>
+          <td><b>Participant's Signature: </b> <span class="mandatory">*</span><input id="sign1CB" type="checkbox"/><lable>Add my signature</label>
+          </td>
           <td class="text"><img style="border:0px dashed gray;" id="sign1" src="" /></td>
         </tr>
       </table>
@@ -837,7 +796,8 @@ I and the above participants hereby declare that I/we will abide by the rules an
       <div style="height:20px;"></div>
       <table>
         <tr>
-          <td id="date2"><b>Date : </b> </td><td><b>Participant's Signature: </b></td>
+          <td id="date2"><b>Date : </b> </td><td><b>Participant's Signature: </b><span class="mandatory">*</span><input id="sign2CB" type="checkbox"/><lable>Add my signature</label>
+          </td>
           <td><img style="border:0px dashed gray;" id="sign2" src="" /></td>
         </tr>
       </table>
@@ -852,7 +812,8 @@ I and the above participants hereby declare that I/we will abide by the rules an
       <div style="height:20px;"></div>
       <table>
         <tr>
-          <td id="date3"><b>Date : </b> </td><td><b>Participant's Signature: </b></td>
+          <td id="date3"><b>Date : </b> </td><td><b>Participant's Signature: </b><span class="mandatory">*</span><input id="sign3CB" type="checkbox"/><lable>Add my signature</label>
+          </td>
           <td><img style="border:0px dashed gray;" id="sign3" src="" /></td>
         </tr>
       </table>
@@ -918,7 +879,8 @@ mentioned in itinerary is not covered by any reason.
 
       <table>
         <tr>
-          <td id="date4"><b>Date : </b> </td><td><b>Participant's Signature: </b></td>
+          <td id="date4"><b>Date : </b> </td><td><b>Participant's Signature: </b><span class="mandatory">*</span><input id="sign4CB" type="checkbox"/><lable>Add my signature</label>
+          </td>
           <td><img style="border:0px dashed gray;" id="sign4" src="" /></td>
         </tr>
       </table>
@@ -1004,11 +966,17 @@ No refunds will be made for non-working of A/C units of the coaches/rooms while 
 
         <table>
           <tr>
-            <td id="date5"><b>Date : </b></td><td><b>Participant's Signature: </b></td>
+            <td id="date5"><b>Date : </b></td><td><b>Participant's Signature: </b><span class="mandatory">*</span><input id="sign5CB" type="checkbox"/><lable>Add my signature</label>
+            </td>
             <td><img style="border:0px dashed gray;" id="sign5" src="" /></td>
           </tr>
         </table>
       </div>
     </div><!--end of main (page div)-->
+    <div style="height:20px;"></div>
+    <input id="aggreement" type="checkbox" name="aggreement"/><label style="font-size:22px;color:darkblue">I have read all the details given below, in the declaration form, and agree with all terms & conditions.</lable><br>
+    <button id="btnSign">Sign & Download Form</button><br><br>
+
+    <span style="font-size:22px;color:darkred">Send downloaded Registration PDF file to Email:= (vrjd@hkm-group.org) ---OR--- (dhgd@hkm-group.org)</span>
 </body>
 </html>

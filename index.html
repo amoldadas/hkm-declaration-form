@@ -168,32 +168,73 @@ jQuery(document).ready(function(e) {
             // Convert canvas to image
             document.getElementById('btnSign').addEventListener("click", function(e) {
             //$('#btnSign').click(function(e) {
-
+                $('#canvasDiv').removeAttr('style');
                 //Verify at least mandatory details of at least 1 candidate are available
                 var isValid = validate();
                 if(isValid==true){
                 //Check if accepted aggreement checkbox
                   if($('#aggreement').prop('checked')){
+
+                    $('#agreementDiv').removeAttr('style');
+
                     drawlImage();
                     //Check if signatere pad is not empty
-                    if($('#sign1').prop('src').length<3000){
-                      alert("Kindly draw signature properly!! Hare Krishna !!");
+                    if($('#sign1').prop('src').length<3000 ||
+                      $('#sign2').prop('src').length<3000 ||
+                      $('#sign3').prop('src').length<3000 ||
+                      $('#sign4').prop('src').length<3000 ||
+                      $('#sign5').prop('src').length<3000
+                      ){
+                      //alert("Kindly draw signature properly!! Hare Krishna !!");
                       //Reset Signature imgages
                       $("#sign1").attr("src","");
                       $("#sign2").attr("src","");
                       $("#sign3").attr("src","");
                       $("#sign4").attr("src","");
                       $("#sign5").attr("src","");
+
+                      highlightSignBox($('#canvasDiv'));
+                      focusInvalidElement("Kindly draw signature properly!! Hare Krishna !!",$('#canvasDiv'));
                     }else{
                       //Generate and download Signed PDF
-                      CreatePDFfromHTML();
-                      alert("Your form has downloaded successfully, Kindly send it on HKM email ID. Thank you very much for your cooperation!!")
+                      $('#canvasDiv').removeAttr('style');
+                      //check all sign check box
+                      if($('#sign1CB').prop('checked') &&  $('#sign2CB').prop('checked') && $('#sign3CB').prop('checked') &&
+                      $('#sign4CB').prop('checked') && $('#sign5CB').prop('checked')){
+                        for(var i=1;i<=5;i++){
+                          $('#sign'+i+'Div').removeAttr('style');
+                        }
+                        CreatePDFfromHTML();
+                        alert("Your form has downloaded successfully, Kindly send it on HKM email ID. Thank you very much for your cooperation!!")
+                      }else{
+                        //alert("Kindly check all signature checks !! Hare Krishna!! ");
+                        for(var i=1;i<=5;i++){
+                          $('#sign'+i+'Div').removeAttr('style');
+                        }
+                        for(var i=1;i<=5;i++){
+                          if(!$('#sign'+i+'CB').prop('checked')){
+                            highlightSignBox($('#sign'+i+'Div'));
+                            focusInvalidElement("Kindly add sign at proper place!! Hare Krishna!!",$('#sign'+i+'Div'));
+                            //return false;
+                            break;
+                          }
+                        }
+                      }
                     }
                   }else{
                     alert("Kindly accept Terms & Conditions!! Hare Krishna !!");
+                    $('#agreementDiv').css({"border-color": "#FF0000",
+                      "border-width":"2px",
+                      "border-style":"solid"});
                   }
                 }
             });
+            function highlightSignBox(element){
+              //focusInvalidElement("Kindly draw signature properly!! Hare Krishna !!",element);
+              element.css({"border-color": "#FF0000",
+                "border-width":"2px",
+                "border-style":"solid"});
+            }
             function validate(){
 
               if($('#pilgrimNameVal').val().length<4){
@@ -201,39 +242,41 @@ jQuery(document).ready(function(e) {
                 return false;
               }
 
-              if($('#name1ValInput').val().length<3){
-                //alert("Kindly enter at least 1 candidates valid name!! Hare Krishna!!");
-                focusInvalidElement("Kindly enter at least 1 candidates valid name!! Hare Krishna!!",$('#name1ValInput'));
-                return false;
-              }
-              if($('#gender1').val().length<4){
-                //alert("Kindly select gender info for first candidate!! Hare Krishna!!");
-                focusInvalidElement("Kindly select gender info for first candidate!! Hare Krishna!!",$('#gender1'));
-                return false;
-              }
-              if($('#dob1').val().length<10){
-                //alert("Kindly enter correct Date of birth for first candidate!! Hare Krishna!!");
-                focusInvalidElement("Kindly enter correct Date of birth for first candidate!! Hare Krishna!!",$('#dob1'));
-                return false;
-              }
-              if($('#mob1').val().length<10){
-                //alert("Kindly enter correct mobile number for first candidate!! Hare Krishna!!");
-                focusInvalidElement("Kindly enter correct mobile number for first candidate!! Hare Krishna!!",$('#mob1'));
-                return false;
+              for(var i=1;i<=parseInt($('#personCount').val());i++){
+                if($('#name'+i+'ValInput').val().length<3){
+                  //alert("Kindly enter at least 1 candidates valid name!! Hare Krishna!!");
+                  focusInvalidElement("Kindly enter valid name for candidate "+i+" !! Hare Krishna!!",$('#name'+i+'ValInput'));
+                  return false;
+                }
+                if($('#gender'+i).val().length<4){
+                  //alert("Kindly select gender info for first candidate!! Hare Krishna!!");
+                  focusInvalidElement("Kindly select gender info for candidate: "+i+" !! Hare Krishna!!",$('#gender'+i));
+                  return false;
+                }
+                if($('#dob'+i).val().length<10){
+                  //alert("Kindly enter correct Date of birth for first candidate!! Hare Krishna!!");
+                  focusInvalidElement("Kindly enter correct Date of birth for candidate: "+i+" !! Hare Krishna!!",$('#dob'+i));
+                  return false;
+                }
+                if($('#mob'+i).val().length<10){
+                  //alert("Kindly enter correct mobile number for first candidate!! Hare Krishna!!");
+                  focusInvalidElement("Kindly enter correct mobile number for candidate: "+i+" !! Hare Krishna!!",$('#mob'+i));
+                  return false;
+                }
               }
               if($('#address').val().length<20){
                 //alert("Kindly enter proper address!! Hare Krishna!!");
-                focusInvalidElement("Kindly enter proper address!! Hare Krishna!!",$('#address'));
+                focusInvalidElement("Kindly enter proper address!! Hare Krishna!!",$('#address'),300);
                 return false;
               }
               if($('#emergencyContactValInput').val().length<10){
                 //alert("Kindly enter proper contact person name!! Hare Krishna!!");
-                focusInvalidElement("Kindly enter proper contact!! Hare Krishna!!",$('#emergencyContactValInput'));
+                focusInvalidElement("Kindly enter proper emergency contact!! Hare Krishna!!",$('#emergencyContactValInput'),300);
                 return false;
               }
               if($('#emergencyContactNameValInput').val().length<3){
                 //alert("Kindly enter proper contact!! Hare Krishna!!");
-                focusInvalidElement("Kindly enter proper contact person name!! Hare Krishna!!",$('#emergencyContactNameValInput'));
+                focusInvalidElement("Kindly enter proper emergency contact person name!! Hare Krishna!!",$('#emergencyContactNameValInput'),300);
                 return false;
               }
 
@@ -242,28 +285,31 @@ jQuery(document).ready(function(e) {
                 //alert("Kindly Submit any ID proof and choose proper option!! Hare Krishna!!");
                 //document.getElementById("aadhar").focus();
                 $('#idProofDiv').css({"border-color": "#FF0000",
-                  "border-width":"1px",
+                  "border-width":"2px",
                   "border-style":"solid"});
                 alert("Kindly select any ID proof which you have submit!! Hare Krishna!!");
                 $("html, body").animate({
-                  scrollTop: $('#idProofDiv').height()+400
+                  scrollTop: $('#emergencyContactVal').height()+500
                 }, 1500);
                 return false;
               }
 
+
+
               //Check if Name is valid from second line, then make sure other details are also present
               //Remove validation markings
               $('#idProofDiv').removeAttr('style');
+              $('#canvasDiv').removeAttr('style');
               $(".mandatory").hide();
 
               return true;
             }
 
-            function focusInvalidElement(message, element){
+            function focusInvalidElement(message, element,height){
               alert(message);
               element.focus();
               $("html, body").animate({
-                scrollTop: element.height()+400
+                scrollTop: element.height()+height
               }, 1500);
             }
 
@@ -319,7 +365,7 @@ jQuery(document).ready(function(e) {
                         pdf.addPage(PDF_Width, PDF_Height);
                         pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height*i)+(top_left_margin*4),canvas_image_width,canvas_image_height);
                     }
-                    pdf.save("HKM_YATRA_DECLARATION_"+$('#name1').val()+".pdf");
+                    pdf.save("HKM_YATRA_DECLARATION_"+$('#name1ValInput').val()+".pdf");
                     $(".page").hide();
                 });
             }
@@ -344,20 +390,6 @@ jQuery(document).ready(function(e) {
               }
             });
 
-            /*function manageSourceVal(sourceVal, currentVal, checked){
-              //var sourceVal = $('#sourcesVal').text();
-              if(checked){
-                if(sourceVal.length){
-                  $('#sourcesVal').text(sourceVal+', '+currentVal);
-                }else{
-                  $('#sourcesVal').text(currentVal);
-                }
-              }else{
-                sourceVal = sourceVal.replace(', '+currentVal,'').replace(currentVal,'');
-                $('#sourcesVal').text(sourceVal);
-              }
-            }*/
-
             $( ".dob1" ).datepicker({
               dateFormat: 'dd/mm/yy',//check change
               changeMonth: true,
@@ -365,7 +397,7 @@ jQuery(document).ready(function(e) {
               yearRange: '1950:2022'
             });
 
-            $("#name1ValInput,#emergencyContactNameValInput").bind("keypress", function (event) {
+            $("#name1ValInput,#name2ValInput,#name3ValInput,#name4ValInput,#name5ValInput,#name6ValInput,#name7ValInput,#emergencyContactNameValInput").bind("keypress", function (event) {
               if (event.charCode!=0) {
                   var regex = new RegExp("^[a-zA-Z ]+$");
                   var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
@@ -375,6 +407,29 @@ jQuery(document).ready(function(e) {
                   }
               }
             });
+            $("#mob1,#mob2,#mob3,#mob4,#mob5,#mob6,#mob7,#emergencyContactValInput").bind("keypress", function (event) {
+              if (event.charCode!=0) {
+                var regex = new RegExp("^[0-9]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                  if ($(this).val().length>9 || !regex.test(key)) {
+                      event.preventDefault();
+                      return false;
+                  }
+              }
+            });
+
+            function bindMobKeyPress(element){
+              element.bind("keypress", function (event) {
+                if (event.charCode!=0) {
+                  var regex = new RegExp("^[0-9]+$");
+                  var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                    if ($(this).val().length>9 || !regex.test(key)) {
+                        event.preventDefault();
+                        return false;
+                    }
+                }
+              });
+            }
 
             $("#address").bind("keypress", function (event) {
               if (event.charCode!=0) {
@@ -400,6 +455,7 @@ jQuery(document).ready(function(e) {
                 $("html, body").animate({
                     scrollTop: 0
                 }, 1500);
+                highlightSignBox($('#canvasDiv'));
               }
             });
 
@@ -415,6 +471,7 @@ jQuery(document).ready(function(e) {
                 $("html, body").animate({
                     scrollTop: 0
                 }, 1500);
+                highlightSignBox($('#canvasDiv'));
               }
             });
 
@@ -430,6 +487,7 @@ jQuery(document).ready(function(e) {
                 $("html, body").animate({
                     scrollTop: 0
                 }, 1500);
+                highlightSignBox($('#canvasDiv'));
               }
             });
 
@@ -445,6 +503,7 @@ jQuery(document).ready(function(e) {
                 $("html, body").animate({
                     scrollTop: 0
                 }, 1500);
+                highlightSignBox($('#canvasDiv'));
               }
             });
 
@@ -460,7 +519,33 @@ jQuery(document).ready(function(e) {
                 $("html, body").animate({
                     scrollTop: 0
                 }, 1500);
+                highlightSignBox($('#canvasDiv'));
               }
+            });
+
+            //Hide row 2 to 7 on page load
+            $('#tr2').hide();
+            $('#tr3').hide();
+            $('#tr4').hide();
+            $('#tr5').hide();
+            $('#tr6').hide();
+            $('#tr7').hide();
+
+            $("#personCount").change(function(){
+              //Hide extra rows
+              for(var i=1;i<=7;i++){
+                if(i>parseInt($(this).val())){
+                  $('#tr'+i).hide();
+                }else{
+                  $('#tr'+i).show();
+                  bindMobKeyPress($('#mob'+i));
+                }
+              }
+            });
+
+            $('#emergencyContactNameValInput,#emergencyContactValInput,#address,#pilgrimNameVal,#name1ValInput,#gender1,#dob1,#mob1,#name2ValInput,#gender2,#dob2,#mob2, #name3ValInput,#gender3,#dob3,#mob3,#name4ValInput,#gender4,#dob4,#mob4,#name5ValInput,#gender5,#dob5,#mob5,#name6ValInput,#gender6,#dob6,#mob6, #name7ValInput,#gender7,#dob7,#mob7'
+          ).bind('focus blur', function() {
+              $(this).toggleClass('red');
             });
         });
 
@@ -490,7 +575,7 @@ jQuery(document).ready(function(e) {
        border-collapse: collapse;
      }
      #pilgrimName, #name1, #name2, #name3, #name4, #name5, #name6, #name7,
-      #emergencyContact, #address{
+      #emergencyContact, #address, #personCount{
        width: 100%;
      }
      .text{
@@ -516,6 +601,9 @@ jQuery(document).ready(function(e) {
      #aadhar{
        border: 4px solid black;
      }
+     .red{
+       border: 4px solid red;
+      }
     </style>
 </head>
 <body>
@@ -527,6 +615,24 @@ jQuery(document).ready(function(e) {
     <br>
 
   </div>
+  <div>
+    <table>
+      <tr>
+        <td style="width:30%;"><span style="font-size: 20px;">Select No of person attending Pilgrim trip</span></td>
+        <td style="width:70%;">
+          <select id="personCount" style="font-size: 20px;padding:5px;">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+          </select>
+        </td>
+      </tr>
+  </table>
+  </div>
 <!--//PDF DIV BEGINS-->
     <div class="page" style="display:block;" id="formDiv">
       <!--Signature pad and buttons section-->
@@ -535,17 +641,17 @@ jQuery(document).ready(function(e) {
       <p>Registration Form</p>
       <table>
         <tr>
-          <td style="width:15%;"><b>Name of the Pilgrimage Tour - </b></td><td style="width:80%;"><span class="mandatory">*</span><input type="text" id="pilgrimNameVal" class="text" style="width: 100%;height: 100%;border-width: 0 0 0.5px;font-size:18px;"/></td><td style="width:5%;"><b>PILGRIMAGE</b></td>
+          <td style="width:15%;"><b>Name of the Pilgrimage Tour - </b></td><td style="width:80%;"><span class="mandatory">*</span><input type="text" id="pilgrimNameVal" class="border text" style="width: 100%;height: 100%;font-size:18px;"/></td><td style="width:5%;"><b>PILGRIMAGE</b></td>
         </tr>
       </table>
       <table>
         <tr>
           <td><b>No.</b></td><td><b>Name as Adhar Card (In Caps)</b></td><td><b>Gender (Male/Female)</b></td><td><b>DOB</b>(in DD/MM/YYYY)</td><td><b>Mobile</b></td>
         </tr>
-        <tr class="text">
+        <tr id="tr1" class="text">
           <td>1</td><td id="name1Val"><span class="mandatory">*</span><input id="name1ValInput" class ="border text" type="text"/> </td>
           <td id="gender1Val"><span class="mandatory">*</span>
-            <select id="gender1" class="border">
+            <select id="gender1" class="border text">
               <option>
 
               </option>
@@ -560,14 +666,14 @@ jQuery(document).ready(function(e) {
           <td id="dob1Val"><span class="mandatory">*</span><input id="dob1" class ="border text dob1" type="text"/></td>
           <td id="mob1Val"><span class="mandatory">*</span><input id="mob1" class ="border text" type="number"/></td>
         </tr>
-        <tr class="text">
+        <tr  id="tr2" class="text">
           <td>2</td>
           <td id="name2Val">
             <span class="mandatory">*</span><input id="name2ValInput" class ="border text" type="text"/>
           </td>
           <td id="gender2Val">
             <span class="mandatory">*</span>
-              <select id="gender2" class="border">
+              <select id="gender2" class="border text">
                 <option>
                 </option>
                 <option>
@@ -579,20 +685,20 @@ jQuery(document).ready(function(e) {
               </select>
           </td>
           <td id="dob2Val">
-            <span class="mandatory">*</span><input class ="border text dob1" type="text"/>
+            <span class="mandatory">*</span><input id="dob2" class ="border text dob1" type="text"/>
           </td>
           <td id="mob2Val">
-            <span class="mandatory">*</span><input class ="border text" type="number"/>
+            <span class="mandatory">*</span><input id="mob2" class ="border text" type="number"/>
           </td>
         </tr>
-        <tr class="text">
+        <tr  id="tr3" class="text">
           <td>3</td>
           <td id="name3Val">
-            <span class="mandatory">*</span><input id="name2ValInput" class ="border text" type="text"/>
+            <span class="mandatory">*</span><input id="name3ValInput" class ="border text" type="text"/>
           </td>
           <td id="gender3Val">
             <span class="mandatory">*</span>
-              <select id="gender2" class="border">
+              <select id="gender3" class="border text">
                 <option>
                 </option>
                 <option>
@@ -604,20 +710,20 @@ jQuery(document).ready(function(e) {
               </select>
           </td>
           <td id="dob3Val">
-            <span class="mandatory">*</span><input class ="border text dob1" type="text"/>
+            <span class="mandatory">*</span><input id="dob3" class ="border text dob1" type="text"/>
           </td>
           <td id="mob3Val">
-            <span class="mandatory">*</span><input class ="border text" type="number"/>
+            <span class="mandatory">*</span><input id="mob3" class ="border text" type="number"/>
           </td>
         </tr>
-        <tr class="text">
+        <tr  id="tr4" class="text">
           <td>4</td>
           <td id="name4Val">
-            <span class="mandatory">*</span><input id="name2ValInput" class ="border text" type="text"/>
+            <span class="mandatory">*</span><input id="name4ValInput" class ="border text" type="text"/>
           </td>
           <td id="gender4Val">
             <span class="mandatory">*</span>
-              <select id="gender2" class="border">
+              <select id="gender4" class="border text">
                 <option>
                 </option>
                 <option>
@@ -629,20 +735,20 @@ jQuery(document).ready(function(e) {
               </select>
           </td>
           <td id="dob4Val">
-            <span class="mandatory">*</span><input class ="border text dob1" type="text"/>
+            <span class="mandatory">*</span><input id="dob4" class ="border text dob1" type="text"/>
           </td>
           <td id="mob4Val">
-            <span class="mandatory">*</span><input class ="border text" type="number"/>
+            <span class="mandatory">*</span><input id="mob4" class ="border text" type="number"/>
           </td>
         </tr>
-        <tr class="text">
+        <tr  id="tr5" class="text">
           <td>5</td>
           <td id="name5Val">
-            <span class="mandatory">*</span><input id="name2ValInput" class ="border text" type="text"/>
+            <span class="mandatory">*</span><input id="name5ValInput" class ="border text" type="text"/>
           </td>
           <td id="gender5Val">
             <span class="mandatory">*</span>
-              <select id="gender2" class="border">
+              <select id="gender5" class="border text">
                 <option>
                 </option>
                 <option>
@@ -654,20 +760,20 @@ jQuery(document).ready(function(e) {
               </select>
           </td>
           <td id="dob5Val">
-            <span class="mandatory">*</span><input class ="border text dob1" type="text"/>
+            <span class="mandatory">*</span><input id="dob5" class ="border text dob1" type="text"/>
           </td>
           <td id="mob5Val">
-            <span class="mandatory">*</span><input class ="border text" type="number"/>
+            <span class="mandatory">*</span><input id="mob5" class ="border text" type="number"/>
           </td>
         </tr>
-        <tr class="text">
+        <tr  id="tr6" class="text">
           <td>6</td>
           <td id="name6Val">
-            <span class="mandatory">*</span><input id="name2ValInput" class ="border text" type="text"/>
+            <span class="mandatory">*</span><input id="name6ValInput" class ="border text" type="text"/>
           </td>
           <td id="gender6Val">
             <span class="mandatory">*</span>
-              <select id="gender2" class="border">
+              <select id="gender6" class="border text">
                 <option>
                 </option>
                 <option>
@@ -679,20 +785,20 @@ jQuery(document).ready(function(e) {
               </select>
           </td>
           <td id="dob6Val">
-            <span class="mandatory">*</span><input class ="border text dob1" type="text"/>
+            <span class="mandatory">*</span><input id="dob6" class ="border text dob1" type="text"/>
           </td>
           <td id="mob6Val">
-            <span class="mandatory">*</span><input class ="border text" type="number"/>
+            <span class="mandatory">*</span><input id="mob6" class ="border text" type="number"/>
           </td>
         </tr>
-        <tr class="text">
+        <tr  id="tr7" class="text">
           <td>7</td>
           <td id="name7Val">
-            <span class="mandatory">*</span><input id="name2ValInput" class ="border text" type="text"/>
+            <span class="mandatory">*</span><input id="name7ValInput" class ="border text" type="text"/>
           </td>
           <td id="gender7Val">
             <span class="mandatory">*</span>
-              <select id="gender2" class="border">
+              <select id="gender7" class="border text">
                 <option>
                 </option>
                 <option>
@@ -704,10 +810,10 @@ jQuery(document).ready(function(e) {
               </select>
           </td>
           <td id="dob7Val">
-            <span class="mandatory">*</span><input class ="border text dob1" type="text"/>
+            <span class="mandatory">*</span><input id="dob7" class ="border text dob1" type="text"/>
           </td>
           <td id="mob7Val">
-            <span class="mandatory">*</span><input class ="border text" type="number"/>
+            <span class="mandatory">*</span><input id="mob7" class ="border text" type="number"/>
           </td>
         </tr>
       </table>
@@ -782,7 +888,7 @@ jQuery(document).ready(function(e) {
       <table>
         <tr>
           <td id="date1"><b>Date : </b></td>
-          <td><b>Participant's Signature: </b> <span class="mandatory">*</span><input id="sign1CB" type="checkbox"/><lable>Add my signature</label>
+          <td><div id="sign1Div"><b>Participant's Signature: </b> <span class="mandatory">*</span><input id="sign1CB" type="checkbox"/><lable>Add my signature</label></div>
           </td>
           <td class="text"><img style="border:0px dashed gray;" id="sign1" src="" /></td>
         </tr>
@@ -797,7 +903,8 @@ I and the above participants hereby declare that I/we will abide by the rules an
       <div style="height:20px;"></div>
       <table>
         <tr>
-          <td id="date2"><b>Date : </b> </td><td><b>Participant's Signature: </b><span class="mandatory">*</span><input id="sign2CB" type="checkbox"/><lable>Add my signature</label>
+          <td id="date2"><b>Date : </b> </td>
+          <td><div id="sign2Div"><b>Participant's Signature: </b><span class="mandatory">*</span><input id="sign2CB" type="checkbox"/><lable>Add my signature</label></div>
           </td>
           <td><img style="border:0px dashed gray;" id="sign2" src="" /></td>
         </tr>
@@ -813,7 +920,8 @@ I and the above participants hereby declare that I/we will abide by the rules an
       <div style="height:20px;"></div>
       <table>
         <tr>
-          <td id="date3"><b>Date : </b> </td><td><b>Participant's Signature: </b><span class="mandatory">*</span><input id="sign3CB" type="checkbox"/><lable>Add my signature</label>
+          <td id="date3"><b>Date : </b> </td>
+          <td><div id="sign3Div"><b>Participant's Signature: </b><span class="mandatory">*</span><input id="sign3CB" type="checkbox"/><lable>Add my signature</label></div>
           </td>
           <td><img style="border:0px dashed gray;" id="sign3" src="" /></td>
         </tr>
@@ -880,7 +988,8 @@ mentioned in itinerary is not covered by any reason.
 
       <table>
         <tr>
-          <td id="date4"><b>Date : </b> </td><td><b>Participant's Signature: </b><span class="mandatory">*</span><input id="sign4CB" type="checkbox"/><lable>Add my signature</label>
+          <td id="date4"><b>Date : </b> </td>
+          <td><div id="sign4Div"><b>Participant's Signature: </b><span class="mandatory">*</span><input id="sign4CB" type="checkbox"/><lable>Add my signature</label></div>
           </td>
           <td><img style="border:0px dashed gray;" id="sign4" src="" /></td>
         </tr>
@@ -967,7 +1076,8 @@ No refunds will be made for non-working of A/C units of the coaches/rooms while 
 
         <table>
           <tr>
-            <td id="date5"><b>Date : </b></td><td><b>Participant's Signature: </b><span class="mandatory">*</span><input id="sign5CB" type="checkbox"/><lable>Add my signature</label>
+            <td id="date5"><b>Date : </b></td>
+              <td><div id="sign5Div"><b>Participant's Signature: </b><span class="mandatory">*</span><input id="sign5CB" type="checkbox"/><lable>Add my signature</label></div>
             </td>
             <td><img style="border:0px dashed gray;" id="sign5" src="" /></td>
           </tr>
@@ -975,7 +1085,9 @@ No refunds will be made for non-working of A/C units of the coaches/rooms while 
       </div>
     </div><!--end of main (page div)-->
     <div style="height:20px;"></div>
-    <input id="aggreement" type="checkbox" name="aggreement"/><label style="font-size:22px;color:darkblue">I have read all the details given below, in the declaration form, and agree with all terms & conditions.</lable><br>
+    <div id="agreementDiv">
+      <input id="aggreement" type="checkbox" name="aggreement"/><label style="font-size:22px;color:darkblue">I have read all the details given, in the declaration form, and agree with all terms & conditions.</lable><br>
+    </div>
     <button id="btnSign">Sign & Download Form</button><br><br>
 
     <span style="font-size:22px;color:darkred">Send downloaded Registration PDF file to Email:= (vrjd@hkm-group.org) ---OR--- (dhgd@hkm-group.org)</span>

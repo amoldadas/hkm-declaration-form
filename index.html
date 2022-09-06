@@ -360,7 +360,7 @@ jQuery(document).ready(function(e) {
                 var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
 
                 html2canvas($(".page")[0]).then(function (canvas) {
-                    var imgData = canvas.toDataURL("image/jpeg", 1.0);
+                    var imgData = canvas.toDataURL("image/jpeg", 0.15);
                     var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height],true);
                     pdf.addImage(imgData, 'PNG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height, undefined,'FAST');
                     for (var i = 1; i <= totalPDFPages; i++) {

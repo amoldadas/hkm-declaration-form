@@ -5,6 +5,8 @@
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
     <meta name="viewport" content="width=1024">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsfile/0.1.17/workers/deflate.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/adler32cs@0.0.2/adler32cs.min.js"></script>
     <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
     <script type="text/javascript" src = "https://momentjs.com/downloads/moment.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -359,11 +361,11 @@ jQuery(document).ready(function(e) {
 
                 html2canvas($(".page")[0]).then(function (canvas) {
                     var imgData = canvas.toDataURL("image/jpeg", 1.0);
-                    var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
-                    pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+                    var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height],true);
+                    pdf.addImage(imgData, 'PNG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height, undefined,'FAST');
                     for (var i = 1; i <= totalPDFPages; i++) {
                         pdf.addPage(PDF_Width, PDF_Height);
-                        pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height*i)+(top_left_margin*4),canvas_image_width,canvas_image_height);
+                        pdf.addImage(imgData, 'PNG', top_left_margin, -(PDF_Height*i)+(top_left_margin*4),canvas_image_width,canvas_image_height, undefined,'FAST');
                     }
                     pdf.save("HKM_YATRA_DECLARATION_"+$('#name1ValInput').val()+".pdf");
                     $(".page").hide();
@@ -895,9 +897,11 @@ jQuery(document).ready(function(e) {
       </table>
       <!--Page 2-->
       <div style="height:20px;"></div>
-      <div style="padding:5px;text-align:justify;">
+      <div style="padding:5px;">
         <div style="text-align:center !important;"><b>DECLARATION</b></div><br>
-I and the above participants hereby declare that I/we will abide by the rules and regulations stated below during the Pilgrimage. I/we understand clearly the terms and conditions listed below. I/we will be solely responsible for my luggage and valuables, if any. I/we will strictly follow the schedule throughout the Pilgrimage and be punctual. I/we certify that to the best of my knowledge, the information I/we provided while registering or applying is true, accurate and complete and any falsification subjects me to the offense of making a written false statement. I acknowledge that the decision to travel is mine and that I/we, therefore, assume liability for any loss or damage that may be incurred. I/we understand that in the case of any medical emergency, Pilgrimage Coordinator though may do their best possible effort, I/we shall be solely responsible for consequences and no claim shall lie against them from me or my relatives. I/we hereby understate that at all times during the Pilgrimage I/we will not do any illegal or immoral activity. I/we will not carry any inflammable item. I/we shall indemnify fellow passengers for any loss or claim owing to my conduct/ misconduct/indiscipline. I/we understand, I/we will take appropriate Travel insurance for my family and valuables.
+        <p>
+          I and the above participants hereby declare that I/we will abide by the rules and regulations stated below during the Pilgrimage. I/we understand clearly the terms and conditions listed below. I/we will be solely responsible for my luggage and valuables, if any. I/we will strictly follow the schedule throughout the Pilgrimage and be punctual. I/we certify that to the best of my knowledge, the information I/we provided while registering or applying is true, accurate and complete and any falsification subjects me to the offense of making a written false statement. I acknowledge that the decision to travel is mine and that I/we, therefore, assume liability for any loss or damage that may be incurred. I/we understand that in the case of any medical emergency, Pilgrimage Coordinator though may do their best possible effort, I/we shall be solely responsible for consequences and no claim shall lie against them from me or my relatives. I/we hereby understate that at all times during the Pilgrimage I/we will not do any illegal or immoral activity. I/we will not carry any inflammable item. I/we shall indemnify fellow passengers for any loss or claim owing to my conduct/ misconduct/indiscipline. I/we understand, I/we will take appropriate Travel insurance for my family and valuables.
+        </p>
         <br><br>I & the above participants agree by the above Declaration.
       </div>
       <div style="height:20px;"></div>
@@ -911,10 +915,12 @@ I and the above participants hereby declare that I/we will abide by the rules an
       </table>
 
       <div style="height:20px;"></div>
-      <div style="padding:5px;text-align:justify;">
+      <div style="padding:5px;">
         <div style="text-align:center !important"><b>Terms and Conditions</b></div><br>
+        <p>
         I/We shall have no liability for any delay or cancellation due to circumstances beyond our control. The following shall be considered to be such circumstances: War or threat of war, accidents causing delays, exceptional weather conditions, fire and/or damage at a station, compliance with requests to the police, customs (or) other government officials and security services, deaths and accident, vandalism and terrorism, unforeseen traffic delays, strike/industrial action, riot or local disturbance or unrest problems caused by other participants, and other circumstances affecting passenger safety. We are not responsible for personal injury or loss of life owing to any reason during the Pilgrimage. In any eventuality, the program coordinator will intimate the person given in the application as family member/concerned person by fast mode of communication such SMS or email to their contact number. The relative/concerned person may call back and obtain more information.
         Terms include any oral/written communication given from time to time. Any dispute or legal proceedings shall be resolved amicably by arbitration under Arbitration Act, 1940 and issues unresolved post arbitration will be subject to jurisdiction of courts in Mumbai only.
+        </p>
         <br><br>I & the above participants agree by the above Declaration.
       </div>
       <div style="height:20px;"></div>

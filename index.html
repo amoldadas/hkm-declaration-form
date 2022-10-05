@@ -643,7 +643,17 @@ jQuery(document).ready(function(e) {
       <p>Registration Form</p>
       <table>
         <tr>
-          <td style="width:15%;"><b>Name of the Pilgrimage Tour - </b></td><td style="width:80%;"><span class="mandatory">*</span><input type="text" id="pilgrimNameVal" class="border text" style="width: 100%;height: 100%;font-size:18px;"/></td><td style="width:5%;"><b>PILGRIMAGE</b></td>
+          <td style="width:15%;"><b>Name of the Pilgrimage Tour - </b></td>
+          <td style="width:80%;"><span class="mandatory">*</span>
+            <!--<input type="text" id="pilgrimNameVal" class="border text" style="width: 100%;height: 100%;font-size:18px;"/>-->
+            <select id="pilgrimNameVal" class="border text" style="width: 100%;height: 100%;font-size:18px;">
+              <option></option>
+              <option>Jaipur Vrindavan Yatra 2022</option>
+              <option>Pandharpur Yatra 2022</option>
+              <option>Dwarka Yatra 2022</option>
+            </select>
+          </td>
+          <td style="width:5%;"><b>PILGRIMAGE</b></td>
         </tr>
       </table>
       <table>
